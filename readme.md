@@ -1,16 +1,16 @@
 # CAD JS - Pure Javascript 2D CAD drawing program
-This JS application uses pure JS to allow for 2D CAD drawing. It was created not to solve problems with existing problems, but as an exercise in using nothing but pure Javascript to accomplish something useful. Some items are needless use of Canvas drawing, such as vertexes, icons, and the UI. Those are intended as placeholders.
+This application uses pure JS to allow for 2D CAD drawing. It was created not to solve problems with existing programs, but as an exercise in using nothing but pure Javascript to accomplish something useful. Some items are needless use of Canvas drawing, such as vertexes, icons, and the UI. Those are intended as placeholders.
 
-Please let me know if and how anything should/could improve, such as: best practices, data structures, usability, etc..
+Please let me know if and how anything should/could improve, such as: best practices, data structures, usability, etc.
 
-NOTE: All files are written in MS Notepad. This is part of the exercise - I am forced to write things correctly and remember variable names. Thus, the JS files are saved as .txt and I don't intend this to stay this way.
+NOTE: **All files are written in MS Notepad**. This is part of the exercise - I am forced to write things with no assistance from an IDE. Thus, the JS files are saved as .txt and I don't intend this to stay this way.
 
 ## Using CAD JS
 Most tools are built to be self-explanatory with the exception of the selector tool. The selector selects and unselects vertexes as expected, but to move the selected vertexes CTRL must be held.
 
-Holding **CTRL** activates the "secondary" function of any tool you're using, if it exists. Your cursor will change to a red PLUS (placeholder).
+Holding CTRL activates the "secondary" function of any tool you're using, if it exists. Your cursor will change to a red PLUS (placeholder).
 
-**Shift** is used to add more vertexes to the current selection set.
+Shift is used to add more vertexes to the current selection set.
 
 ## Future
 I have plans to expand the usability of CAD JS. These include (in order of importance):
