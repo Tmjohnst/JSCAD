@@ -1,0 +1,111 @@
+function Selector(){
+	var selectedVertexes = new Array();
+
+	var finished = false;
+	var windowSet = false;
+	var windowDrawing = false;
+
+	this.vertex1Set = false;
+	this.vertex1 = new Vertex();
+
+	var refX = mousePos.x;
+	var refY = mousePos.y;
+	
+	var selectRange = 5;
+	var moveVertexes = false;
+
+	this.show = function(){
+		for (i=0;i<vertexes.length;i++){
+			if (dragging && !ctrl){
+				var contained = vertexes[i].isContained(this.vertex1.x, this.vertex1.y, getMousePos().x, getMousePos().y);
+				if (contained){
+					vertexes[i].select();
+				} else if (shift) {
+					var alreadyInSelectionSet = false;
+					for (var j=0; j<selectedVertexes.length; j++){
+						if (vertexes[i] == selectedVertexes[j]) {alreadyInSelectionSet = true}
+					}
+					if (!alreadyInSelectionSet) { vertexes[i].deselect(); }
+				}
+			} 
+			if (vertexes[i].isSelected() && !dragging){ 
+				vertexes[i].select(); 
+			} //resets the selection position...
+		}
+		
+		if (dragging && SELECTED_VERTEXES > 0 && ctrl) {
+			console.log("trying to drag");
+			for (var j=0;j<vertexes.length;j++){
+				var dx = mousePos.x - mouseClick.x;
+				var dy = mousePos.y - mouseClick.y;
+				if (vertexes[j].isSelected()){ vertexes[j].setSelect(dx, dy); }
+			}
+		}
+
+		if (enter) {
+			for (var j=0;j<vertexes.length;j++){
+				if (vertexes[j].isSelected()){ 
+					vertexes[j].printParents();
+					vertexes[j].deselect();
+				}
+			}
+			enter = false;
+		}
+		
+		if (dragging && !ctrl) {
+			ctx.beginPath();
+			ctx.globalAlpha = 0.25;
+			ctx.fillStyle = '#17bec1';
+			ctx.fillRect(this.vertex1.x,this.vertex1.y,getMousePos().x-this.vertex1.x,getMousePos().y-this.vertex1.y);
+			ctx.globalAlpha = 1;
+			ctx.rect(this.vertex1.x,this.vertex1.y,getMousePos().x-this.vertex1.x,getMousePos().y-this.vertex1.y);
+			ctx.lineWidth = 1;
+			ctx.stroke();
+		}
+	}
+
+	this.getVertexes = function(){
+	}
+
+	this.deselect = function(){		
+	}
+
+	this.start = function(x,y){
+	}
+
+	this.end = function(x,y){
+		this.finished = true;
+	}
+
+	this.step = function(x,y){
+		this.vertex1.set(x,y);
+		var nearAnything = false;
+
+		if (!shift && !ctrl) {
+			for (i=0;i<vertexes.length;i++){
+				vertexes[i].deselect();
+			}
+		} else if (!ctrl) {
+			for (i=0;i<vertexes.length;i++){
+				if (vertexes[i].isSelected()) {
+					selectedVertexes.push(vertexes[i]);
+				}
+			}
+		}
+
+		for (var i=0;i<vertexes.length;i++){
+			var vert = vertexes[i];
+			if (vert.isNear(mousePos.x, mousePos.y, selectRange)){
+				if (vert.isSelected()) {
+					vert.deselect()
+				} else {
+					vert.select();
+					selectedVertexes.push(vertexes[i]);
+				}
+				nearAnything = true;
+			} else if(!shift && !ctrl && vert.isSelected()) {
+				vert.deselect();
+			}
+		}
+	}
+}

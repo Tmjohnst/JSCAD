@@ -1,0 +1,306 @@
+//Main js file for this project
+
+var currentTool = new Array(); //array that holds a single tool in use
+var elements = new Array(); //all elements in the frame
+var vertexes = new Array(); //all vertexes to be drawn (since elements can share vertecies, they should be drawn separate)
+var keysDown = new Array(); //all keys pressed
+
+var c = document.getElementById("canvas");
+var ctx = c.getContext("2d");
+
+var cursor;
+var grid;
+var gridSize = 10;
+var leftPanelWidth = c.width/10;
+var buttonPane;
+
+//program option booleans
+var snap = true;
+var showGrid = true;
+
+var shift = false; //global flag to check if shift is pressed
+var ctrl = false; //global flag to check if ctrl is pressed
+var enter = false; //global flag to check if enter is pressed
+var dragging = false; //global flag to check if we're dragging
+
+var framerate = 60; //fps
+var ONE_FRAME_TIME = 1000 / framerate;
+var dt;
+var lastUpdate = Date.now();
+
+//var VERTEXES = 0; //total vertexes created
+var SELECTED_VERTEXES = 0; //to indicate whether or not we're selecting
+
+c.addEventListener('mousemove', function(evt){ mousePos = handleMousePos(evt); }, false);
+c.addEventListener('mousedown', function(evt){
+	mouseClick = handleMousePos(evt);
+	mouseClick.held = true; //never gets set externally
+}, false);
+c.addEventListener('mouseup', function(evt){ 
+	mouseClick.down = false;
+	mouseClick.rightDown = false;
+	mouseClick.held = false;
+	dragging = false;
+}, false);
+
+c.addEventListener('keydown', function(evt){ 
+	shift = evt.shiftKey; 
+	ctrl = evt.ctrlKey; 
+	enter = (evt.keyCode == 13); 
+}, false);
+c.addEventListener('keyup'  , function(evt){ 
+	shift = evt.shiftKey; 
+	ctrl = evt.ctrlKey; 
+	enter = (evt.keyCode == 13); 
+}, false);
+
+var mousePos = {
+	rightDown: false,
+	down: false,
+	x: 0,
+	y: 0
+};
+
+var mouseClick = {
+	rightDown: false,
+	down: false,
+	x: 0,
+	y: 0
+};
+
+function handleMousePos(evt){
+	var rect = c.getBoundingClientRect();
+	var pos = new Vector(Math.floor((evt.clientX - rect.left)/(rect.right-rect.left)*c.width), Math.floor((evt.clientY - rect.top)/(rect.bottom-rect.top)*c.height))
+	var leftClick = false;
+	var rightClick = false;
+	if (evt.button == 0) { leftClick = true; }
+	if (evt.button == 2) { rightClick = true; }
+
+	return {
+		rightDown: rightClick,
+		down: leftClick,
+		x: pos.x,
+		y: pos.y
+	};
+}
+
+function getMousePos(){
+	return mousePos;
+}
+
+function nearestVertex(dist,x,y){
+	var ret = {};
+	var bestDist = 1000010;
+
+	for (var i=0; i<vertexes.length; i++){
+		if (vertexes[i].isNear(x,y,dist)) {
+			var aDist = Math.hypot(vertexes[i].x - x, vertexes[i].y - y);
+			console.log("aDist: " + aDist);
+			if (aDist < bestDist) {
+				ret = vertexes[i];
+				bestDist = aDist;
+			}
+		}
+	}
+	if (bestDist == 1000010) { ret = false; }
+	return ret;
+}
+
+function pushVertex(v){
+	vertexes.push(v);
+}
+
+function getAllSelectedVertexes(){
+	var vertexesSelected = new Array();
+
+	for (var i=0; i<vertexes.length; i++){
+		if(vertexes[i].isSelected) { vertexesSelected.push(vertexes[i]); }
+	}
+
+	return vertexesSelected;
+}
+
+function removeElement(id){
+	elements.splice(id, 1);
+}
+
+function init(){
+	cursor = new Cursor();
+	
+	buttonPane = new ButtonPane(leftPanelWidth);
+	buttonPane.addButton('select');
+	buttonPane.addButton('circle');
+	buttonPane.addButton('rect');
+	buttonPane.addButton('line');
+	buttonPane.addButton('polygon');
+
+	grid = new Grid();
+	dt = 0;
+}
+
+function deselectAll(){
+	for (var i=0; i<vertexes.length; i++){ vertexes[i].deselect(); }
+}
+
+function draw(){
+	var now = Date.now();
+
+	if (ctx.canvas.width != window.innerWidth){
+		ctx.canvas.width = window.innerWidth;
+		ctx.canvas.height = window.innerHeight;
+	}
+
+	var lastX;
+	var lastY;
+	ctx.clearRect(0, 0, c.width, c.height);
+	if (showGrid) { grid.show(); }
+
+	//check if we are dragging by checking how far we are from the click and if the mouse is held
+	if (Math.sqrt(Math.pow(mouseClick.x-mousePos.x,2) + Math.pow(mouseClick.y-mousePos.y,2)) > 10) {
+		if (mouseClick.held) {dragging = true;}
+	}
+
+	var elementIsDrawing = false;
+	var elementDrawing = 0;
+	var toolSelected = false;
+	var toolIsDrawing = false;
+
+	//check if we are currently drawing something
+	for (i=0; i<elements.length; i++){
+		if(!elements[i].finished){
+			elementIsDrawing = true;
+			elementDrawing = i;
+		}
+	}
+	
+	if(!currentTool.length <= 0 && !currentTool[0].finished){
+		toolSelected = true;
+		toolIsDrawing = true;
+	}
+	
+	//handle clicks
+	if (mouseClick.down){
+		mouseClick.x = mousePos.x;
+		mouseClick.y = mousePos.y;
+
+		//We do these two checks to cancel the current operation if you click a new tool before it's done
+		if(mouseClick.x < leftPanelWidth && elementIsDrawing){
+			removeElement(elementDrawing);
+			buttonPane.selectButton(mouseClick.y);
+			elementIsDrawing = false;
+			if (buttonPane.getSelectedTool() != "select") {
+				this.deselectAll();
+			}
+		}
+
+		if(mouseClick.x < leftPanelWidth && !elementIsDrawing) {
+			buttonPane.selectButton(mouseClick.y);
+			//handle the selecter tools
+			if (buttonPane.getSelectedTool() == "select"){
+				mouseClick.down = false; //so the selector doesn't grab this click
+				var select = new Selector();
+				select.start(mouseClick.x, mouseClick.y);
+				currentTool[0] = select;
+				toolSelected = true;
+				toolIsDrawing = true;
+			} else { //didn't select a tool
+				currentTool.splice(0,1);
+				toolSelected = false;
+				toolIsDrawing = false;
+				this.deselectAll();
+			}
+			for (var i=0; i<elements.length; i++){
+				if(!elements[i].finished){
+					elementIsDrawing = true;
+					elementDrawing = i;
+				}
+			}
+			if(toolSelected && !currentTool[0].finished){
+				toolIsDrawing = true;
+			} else {
+				toolIsDrawing = false;
+			}
+		} 
+		
+		//if we are drawing and it's within the canvas
+		if (mouseClick.x > leftPanelWidth){
+			//handle the line tool
+			if (buttonPane.getSelectedTool() == "line" && !elementIsDrawing){ //removed !drawing
+				var line = new Line();
+				line.start(mouseClick.x, mouseClick.y);
+				elements.push(line);
+			}
+		
+			//handle the circle tool
+			if (buttonPane.getSelectedTool() == "circle" && !elementIsDrawing){
+				var circle = new Circle();
+				circle.start(mouseClick.x, mouseClick.y);
+				elements.push(circle);
+			}
+
+			//handle the rectangle tool
+			if (buttonPane.getSelectedTool() == "rect" && !elementIsDrawing){
+				var rect = new Rect();
+				rect.start(mouseClick.x, mouseClick.y);
+				elements.push(rect);
+			}
+
+
+			//handle the polygon tool
+			if (buttonPane.getSelectedTool() == "polygon" && !elementIsDrawing){
+				var poly = new Polygon();
+				poly.start(mouseClick.x, mouseClick.y);
+				elements.push(poly);
+			}
+
+			//advance any element if it's currently drawing
+			if (elementIsDrawing) {
+				elements[elementDrawing].step(mouseClick.x, mouseClick.y);
+			}
+
+			//advance any tool if it's currently drawing
+			if (toolIsDrawing) {
+				currentTool[0].step(mouseClick.x, mouseClick.y);
+			}
+		}
+		
+		this.lastX = mouseClick.x;
+		this.lastY = mouseClick.y;
+	} else {
+		this.lastX = mousePos.x;
+		this.lastY = mousePos.y;
+	}
+	
+	//free the cursor from snaps when the select tool is being used
+	if (buttonPane.getSelectedTool() == "select"){
+		snap = false;
+	} else {
+		//snap = !snap;
+	}
+
+	for (var i=0; i<elements.length; i++){ elements[i].show(); } //show all elements
+	for (var i=0; i<vertexes.length; i++){ vertexes[i].show(); } //show all vertexes
+	if (!currentTool.length <= 0) { currentTool[0].show(); } //show current tool
+
+	buttonPane.show();
+	cursor.show();
+	
+	dt = now - lastUpdate;
+	lastUpdate = now;
+	mouseClick.down = false; // if nothing handled the mouseclick, we didn't need it
+	mouseClick.rightDown = false;
+}
+
+//Gives us info about what's drawn every second
+function info(){
+	console.log("Total vertexes: " + vertexes.length + "  dt:" + dt);
+
+	//var a = "";
+	//for (var i=0; i<elements.length; i++){ a = a + elements[i].constructor.name + " "; }
+	//console.log(a);
+	console.log("number of selected verts: " + SELECTED_VERTEXES);
+}
+
+init();
+setInterval(draw, ONE_FRAME_TIME);
+setInterval(info, 1000);

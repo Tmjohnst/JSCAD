@@ -1,0 +1,70 @@
+function Polygon(){
+	this.polyLines = new Array();
+	var finished = false;
+	var v1;
+	this.hover = false;
+
+	this.show = function(){
+		if (mouseClick.rightDown && !finished) { 
+			this.end(); 
+		}
+		//if (this.polyLines.length == 0) { this.v1.show(); }
+		for (var i = 0; i < this.polyLines.length; i++) {
+			this.polyLines[i].show();
+		}
+	}
+
+	this.isNear = function(x,y,dist){
+		//TODO: Calculate if it is near the line
+		return false;
+	}
+
+	this.hover = function(){ this.hover = true; }
+
+	this.unhover = function(){ this.hover = false; }
+
+	this.getVertexes = function(){
+		var vertexes = new Array();
+		vertexes.push(this.v1);
+		for (var i = 0; i<this.polyLines.length; i++) {
+			vertexes.push(this.polyLines[i].v2());
+		}
+		return vertexes;
+	}
+
+	this.start = function(x,y){
+		if (nearestVertex(5,x,y)) {
+			this.v1 = nearestVertex(5,x,y);
+		} else {
+			this.v1 = new Vertex(x,y);
+			pushVertex(this.v1);
+		}
+		this.v1.select();
+	}
+
+	this.end = function(x,y){
+		this.polyLines.push(new Line(this.polyLines[this.polyLines.length-1].v2(), this.v1));
+		this.polyLines[this.polyLines.length-1].deselect();
+		this.finished = true;
+	}
+
+	this.step = function(x,y){
+		this.a = {};
+		if (nearestVertex(5,x,y)) {
+			this.a = nearestVertex(5,x,y);
+		} else {
+			this.a = new Vertex(x,y);
+			pushVertex(this.a);
+		}
+
+		if (this.polyLines.length == 0) {
+			this.polyLines.push(new Line(this.v1, this.a));
+			this.v1.deselect();
+			this.a.select();
+		} else {
+			this.polyLines.push(new Line(this.polyLines[this.polyLines.length-1].v2(), this.a));
+			this.polyLines[this.polyLines.length-1].deselect();
+			this.a.select();
+		}
+	}
+}

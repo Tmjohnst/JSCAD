@@ -1,0 +1,97 @@
+function PaneButton(x,y,width,height,text){
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+	this.text = text;
+	this.selectedTool;
+
+	this.down = false;
+	this.selected = false;
+
+	this.border = 2;
+	
+	this.select = function(){
+		this.selected = true;
+	}
+
+	this.deselect = function(){
+		this.selected = false;
+	}
+	
+	this.show = function(){
+		ctx.beginPath();
+		ctx.lineWidth = this.border;
+		ctx.rect(this.x+this.border/2, this.y+this.border/2, this.width-this.border, this.height-this.border);
+		if(this.selected){
+			ctx.strokeStyle = '#ff0000';
+		} else {
+			ctx.strokeStyle = '#000000';
+		}
+		ctx.stroke();
+		if (this.text == "circle") {
+			var r = this.width/3.5;
+			ctx.beginPath();
+			ctx.strokeStyle = '#008000';
+			ctx.arc(x + this.width/2,y + this.height/2,r,0,2*Math.PI, false);
+			ctx.lineWidth = this.border;
+			ctx.stroke();
+		} else if(this.text == "line") {
+			ctx.beginPath();
+			ctx.strokeStyle = '#008000';
+			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctx.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
+			ctx.lineWidth = this.border;
+			ctx.stroke();
+		} else if(this.text == "rect") {
+			ctx.beginPath();
+			ctx.lineWidth = this.border;
+			ctx.rect(this.x+this.width/4, this.y+this.height/4, this.width/2, this.height/2);
+			ctx.strokeStyle = '#008000';
+			ctx.stroke();
+		} else if(this.text == "select") {
+			ctx.beginPath();
+			ctx.strokeStyle = '#008000';
+
+			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctx.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
+
+			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctx.lineTo(this.x+this.width/5,this.y+this.height - this.width/3);
+			
+			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctx.lineTo(this.x+this.width - this.width/3,this.y+this.width/5);
+			
+			ctx.lineWidth = this.border;
+			ctx.stroke();
+		} else if(this.text == "polygon") {
+			ctx.beginPath();
+			ctx.strokeStyle = '#008000';
+
+			var unit = this.width/5;
+			var px = this.x;
+			var py = this.y;
+
+			ctx.moveTo(px+unit,py+unit);
+			ctx.lineTo(px+unit,py+unit*4);
+
+			ctx.moveTo(px+unit,  py+unit*4);
+			ctx.lineTo(px+unit*3,py+unit*4);
+
+			ctx.moveTo(px+unit*3,py+unit*4);
+			ctx.lineTo(px+unit*4,py+unit*3);
+			
+			ctx.moveTo(px+unit*4,py+unit*3);
+			ctx.lineTo(px+unit*3,py+unit*2);
+
+			ctx.moveTo(px+unit*3,py+unit*2);
+			ctx.lineTo(px+unit*2,py+unit*3);
+
+			ctx.moveTo(px+unit*2,py+unit*3);
+			ctx.lineTo(px+unit,py+unit);
+
+			ctx.lineWidth = this.border;
+			ctx.stroke();
+		}
+	}
+}

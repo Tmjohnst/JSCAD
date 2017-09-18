@@ -1,0 +1,23 @@
+function Grid(){
+	var gridPointDensity;
+
+	this.show = function(){
+		ctx.globalAlpha = 0.1;
+		for (i = 0; i < c.height; i += gridSize){
+			ctx.beginPath();
+			ctx.moveTo(0,i);
+			ctx.lineTo(c.width,i);
+			ctx.strokeStyle = '#000000';
+			ctx.stroke();
+		}
+
+		for (i = 0; i < c.width; i += gridSize){
+			ctx.beginPath();
+			ctx.moveTo(i,0);
+			ctx.lineTo(i,c.height);
+			ctx.strokeStyle = '#000000';
+			ctx.stroke();
+		}
+		ctx.globalAlpha = 1;
+	}
+}

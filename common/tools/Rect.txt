@@ -1,0 +1,135 @@
+function Rect(){
+	this.vertex1Set = false;
+	this.vertex2Set = false;
+	this.vertex1; //first click
+	this.vertex2; //last click
+	this.vertex3; //corner 1
+	this.vertex4; //corner 2
+
+	this.line1; //line v1 to v3
+	this.line2; //line v1 to v4
+	this.line3; //line v2 to v3
+	this.line4; //line v2 to v4
+	
+	var finished = false;
+	this.hover = false;
+
+	this.show = function(){
+		if (this.vertex1Set && this.vertex2Set) { //drawing completed rect
+			this.line1.show();
+			this.line2.show();
+			this.line3.show();
+			this.line4.show();
+		} else if(this.vertex1Set && !this.vertex2Set){ //drawing incomplete rect
+			this.vertex2.set(getMousePos().x, getMousePos().y);
+			this.vertex3.set(this.vertex1.x, getMousePos().y);
+			this.vertex4.set(getMousePos().x, this.vertex1.y);
+
+			//have to manually show the next 3 vertexes because they are not pushed into the vertex list yet
+			this.vertex2.show();
+			this.vertex3.show();
+			this.vertex4.show();
+
+			this.line1.show();
+			this.line2.show();
+			this.line3.show();
+			this.line4.show();
+		}
+	}
+
+	this.isNear = function(x,y,dist){
+		//TODO: Calculate if it is near the line
+		return false;
+	}
+
+	this.hover = function(){ this.hover = true; }
+
+	this.unhover = function(){ this.hover = false; }
+
+	this.getVertexes = function(){
+		var vertexes = new Array();
+		vertexes.push(this.vertex1);
+		vertexes.push(this.vertex2);
+		vertexes.push(this.vertex3);
+		vertexes.push(this.vertex4);
+		return vertexes;
+	}
+
+	this.start = function(x,y){
+		//only the point for v1 is determined here, so we'll check the others later (they might combine)
+		if (nearestVertex(5,x,y)) {
+			this.vertex1 = nearestVertex(5,x,y);
+		} else {
+			this.vertex1 = new Vertex(x,y);
+			pushVertex(this.vertex1);
+		}		
+		
+		this.vertex2 = new Vertex();
+		this.vertex3 = new Vertex();
+		this.vertex4 = new Vertex();
+
+		//temp set these lines to be reset later once they're set
+		this.line1 = new Line(this.vertex1, this.vertex3); //vertical
+		this.line2 = new Line(this.vertex1, this.vertex4); //horizontal
+		this.line3 = new Line(this.vertex2, this.vertex3); //vertical
+		this.line4 = new Line(this.vertex2, this.vertex4); //horizontal
+		
+		this.vertex1Set = true;
+		this.vertex1.select();
+	}
+
+	this.end = function(x,y){
+		//first, set all the vertexes (check for overlaps and use the overlapped vertex if it exists)
+		if (nearestVertex(5,x,y)) {
+			this.vertex2 = nearestVertex(5,x,y);
+			this.vertex2Set = true;
+		}
+
+		//if it's not an overlap, it must be a new vertex
+		if (!this.vertex2Set){
+			this.vertex2 = new Vertex(x,y);
+			pushVertex(this.vertex2);
+		}
+
+		//check vert3
+		if (nearestVertex(5,this.vertex1.x,this.vertex2.y)) { 
+			this.vertex3 = nearestVertex(5,this.vertex1.x,this.vertex2.y);
+		} else {
+			this.vertex3.set(this.vertex1.x, getMousePos().y);
+			pushVertex(this.vertex3);
+		}
+		
+		//check vert4
+		if (nearestVertex(5,this.vertex2.x,this.vertex1.y)) { 
+			this.vertex4 = nearestVertex(5,this.vertex2.x,this.vertex1.y); 
+		} else {
+			this.vertex4.set(getMousePos().x, this.vertex1.y);
+			pushVertex(this.vertex4);
+		}
+
+		//reset all lines now that we know where they land
+		this.line1 = new Line(this.vertex1, this.vertex3);
+		this.vertex1.addParent(this.line1)
+		this.vertex3.addParent(this.line1)
+		this.line2 = new Line(this.vertex1, this.vertex4);
+		this.vertex1.addParent(this.line2)
+		this.vertex4.addParent(this.line2)
+		this.line3 = new Line(this.vertex2, this.vertex3);
+		this.vertex2.addParent(this.line3)
+		this.vertex3.addParent(this.line3)
+		this.line4 = new Line(this.vertex2, this.vertex4);
+		this.vertex2.addParent(this.line4)
+		this.vertex4.addParent(this.line4)
+
+		//setting vertex2Set signals that the tool is done
+		this.vertex2Set = true;
+		this.vertex1.deselect();
+		this.vertex2.deselect();
+		this.finished = true;
+	}
+
+	this.step = function(x,y){ //rect ends after 1 step
+		console.log("step");
+		this.end(x,y);
+	}
+}
