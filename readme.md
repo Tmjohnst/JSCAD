@@ -6,11 +6,11 @@ Please let me know if and how anything should/could improve, such as: best pract
 NOTE: All files are written in MS Notepad. This is part of the exercise - I am forced to write things correctly and remember variable names. Thus, the JS files are saved as .txt and I don't intend this to stay this way.
 
 ## Using CAD JS
-Most tools are built to be self-explanitory with the exception of the selector tool. The selector selects and unselects vertexes as expected, but to move the selected vertexes CTRL must be held.
+Most tools are built to be self-explanatory with the exception of the selector tool. The selector selects and unselects vertexes as expected, but to move the selected vertexes CTRL must be held.
 
-Holding CTRL activates the "secondary" function of any tool you're using, if it exists. Your cursor will change to a red PLUS (placeholder).
+Holding **CTRL** activates the "secondary" function of any tool you're using, if it exists. Your cursor will change to a red PLUS (placeholder).
 
-Shift is used to add more vertexes to the current selection set.
+**Shift** is used to add more vertexes to the current selection set.
 
 ## Future
 I have plans to expand the usability of CAD JS. These include (in order of importance):
