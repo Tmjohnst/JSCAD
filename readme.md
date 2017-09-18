@@ -1,7 +1,9 @@
 # CAD JS - Pure Javascript 2D CAD drawing program
 This JS application uses pure JS to allow for 2D CAD drawing. It was created not to solve problems with existing problems, but as an exercise in using nothing but pure Javascript to accomplish something useful. Some items are needless use of Canvas drawing, such as vertexes, icons, and the UI. Those are intended as placeholders.
 
-Please let me know if and how anything should/could improve, such as: best practices, data structures, usability, etc.
+Please let me know if and how anything should/could improve, such as: best practices, data structures, usability, etc..
+
+NOTE: All files are written in MS Notepad. This is part of the exercise - I am forced to write things correctly and remember variable names. Thus, the JS files are saved as .txt and I don't intend this to stay this way.
 
 ## Using CAD JS
 Most tools are built to be self-explanitory with the exception of the selector tool. The selector selects and unselects vertexes as expected, but to move the selected vertexes CTRL must be held.
