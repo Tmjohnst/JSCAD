@@ -189,4 +189,10 @@ function Vertex(x, y){
 		this.moveFromX = x;
 		this.moveFromY = y;
 	}
+
+	this.dist = function(v){
+		var x2 = (v.x - this.x) * (v.x - this.x);
+		var y2 = (v.y - this.y) * (v.y - this.y);
+		return Math.sqrt(x2+y2);
+	}
 }

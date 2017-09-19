@@ -2,7 +2,7 @@ function Polygon(){
 	this.polyLines = new Array();
 	var finished = false;
 	var v1;
-	this.hover = false;
+	this.hovering = false;
 
 	this.show = function(){
 		if (mouseClick.rightDown && !finished) { 
@@ -14,14 +14,46 @@ function Polygon(){
 		}
 	}
 
-	this.isNear = function(x,y,dist){
-		//TODO: Calculate if it is near the line
+	this.isSelected = function(){
+		var isSelected = false;
+		for (var i=0; i<this.polyLines.length; i++){
+			if (this.polyLines[i].isSelected()) { return true; }
+		}
 		return false;
 	}
 
-	this.hover = function(){ this.hover = true; }
+	this.select = function(){
+		for (var i=0; i<this.polyLines.length; i++){
+			this.polyLines[i].select();
+		}
+	}
 
-	this.unhover = function(){ this.hover = false; }
+	this.deselect = function(){
+		for (var i=0; i<this.polyLines.length; i++){
+			this.polyLines[i].deselect();
+		}
+	}
+
+	this.isNear = function(x,y,dist){
+		for (var i=0; i<this.polyLines.length; i++){
+			if (this.polyLines[i].isNear(x,y,dist)) { return true; }
+		}
+		return false;
+	}
+
+	this.hover = function(){ 
+		this.hovering = true;
+		for (var i=0; i<this.polyLines.length; i++){
+			this.polyLines[i].hover();
+		} 
+	}
+
+	this.unhover = function(){ 
+		this.hovering = false;
+		for (var i=0; i<this.polyLines.length; i++){
+			this.polyLines[i].unhover();
+		} 
+	}
 
 	this.getVertexes = function(){
 		var vertexes = new Array();

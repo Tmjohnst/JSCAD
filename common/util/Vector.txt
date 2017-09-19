@@ -64,5 +64,9 @@ function Vector(x, y, angle, mag){
 		var yComponent = Math.sin(this.angle*2*Math.PI/180) * this.mag;
 
 		return xComponent*xComponent + yComponent*yComponent;
-	}	
+	}
+
+	this.dot = function(v){
+		return (v.x*this.x + v.y*this.y);
+	}
 }

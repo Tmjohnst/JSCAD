@@ -11,11 +11,10 @@ function Selector(){
 	var refX = mousePos.x;
 	var refY = mousePos.y;
 	
-	var selectRange = 5;
 	var moveVertexes = false;
 
 	this.show = function(){
-		for (i=0;i<vertexes.length;i++){
+		for (var i=0;i<vertexes.length;i++){
 			if (dragging && !ctrl){
 				var contained = vertexes[i].isContained(this.vertex1.x, this.vertex1.y, getMousePos().x, getMousePos().y);
 				if (contained){
@@ -34,7 +33,6 @@ function Selector(){
 		}
 		
 		if (dragging && SELECTED_VERTEXES > 0 && ctrl) {
-			console.log("trying to drag");
 			for (var j=0;j<vertexes.length;j++){
 				var dx = mousePos.x - mouseClick.x;
 				var dy = mousePos.y - mouseClick.y;
@@ -95,9 +93,9 @@ function Selector(){
 
 		for (var i=0;i<vertexes.length;i++){
 			var vert = vertexes[i];
-			if (vert.isNear(mousePos.x, mousePos.y, selectRange)){
+			if (vert.isNear(mousePos.x, mousePos.y, selectRangeVert)){
 				if (vert.isSelected()) {
-					vert.deselect()
+					vert.deselect();
 				} else {
 					vert.select();
 					selectedVertexes.push(vertexes[i]);
@@ -105,6 +103,22 @@ function Selector(){
 				nearAnything = true;
 			} else if(!shift && !ctrl && vert.isSelected()) {
 				vert.deselect();
+			}
+		}
+
+		for (var i=0;i<elements.length;i++){
+			var elem = elements[i];
+			if (elem.isNear(mousePos.x, mousePos.y, selectRangeElem)){
+				if (elem.isSelected()) {
+					elem.deselect();
+				} else {
+					elem.select();
+					var elemVerts = elem.getVertexes();
+					for (var i=0;i<elemVerts.length;i++) { selectedVertexes.push(elem[i]); }
+				}
+				nearAnything = true;
+			} else if(!shift && !ctrl && elem.isSelected()) {
+				elem.deselect();
 			}
 		}
 	}

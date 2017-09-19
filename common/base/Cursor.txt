@@ -6,7 +6,7 @@ function Cursor(){
 	this.show = function(){
 		this.pos = getMousePos(); //we use this lots of times, so a local variable is faster
 		for (var i=0;i<vertexes.length;i++){
-			if (vertexes[i].isNear(this.pos.x, this.pos.y, 5)){
+			if (vertexes[i].isNear(mousePos.x, mousePos.y, selectRangeVert)){
 				vertexes[i].hover();
 			} else {
 				vertexes[i].unhover();
@@ -14,10 +14,12 @@ function Cursor(){
 		}
 
 		for (var i=0;i<elements.length;i++){
-			if (elements[i].isNear(this.pos.x, this.pos.y, 5)){
-				elements[i].hover();
-			} else {
-				elements[i].unhover();
+			if (elements[i].finished){
+				if (elements[i].isNear(mousePos.x, mousePos.y, selectRangeElem)){
+					elements[i].hover();
+				} else {
+					elements[i].unhover();
+				}
 			}
 		}
 

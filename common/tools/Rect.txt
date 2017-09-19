@@ -12,10 +12,22 @@ function Rect(){
 	this.line4; //line v2 to v4
 	
 	var finished = false;
-	this.hover = false;
+	this.hovering = false;
 
 	this.show = function(){
 		if (this.vertex1Set && this.vertex2Set) { //drawing completed rect
+			if(this.hovering){
+				this.line1.hover();
+				this.line2.hover();
+				this.line3.hover();
+				this.line4.hover();
+			} else {
+				this.line1.unhover();
+				this.line2.unhover();
+				this.line3.unhover();
+				this.line4.unhover();
+			}
+
 			this.line1.show();
 			this.line2.show();
 			this.line3.show();
@@ -38,13 +50,12 @@ function Rect(){
 	}
 
 	this.isNear = function(x,y,dist){
-		//TODO: Calculate if it is near the line
-		return false;
+		return (this.line1.isNear(x,y,dist)||this.line2.isNear(x,y,dist)||this.line3.isNear(x,y,dist)||this.line4.isNear(x,y,dist));
 	}
 
-	this.hover = function(){ this.hover = true; }
+	this.hover = function(){ this.hovering = true; }
 
-	this.unhover = function(){ this.hover = false; }
+	this.unhover = function(){ this.hovering = false; }
 
 	this.getVertexes = function(){
 		var vertexes = new Array();
@@ -54,6 +65,25 @@ function Rect(){
 		vertexes.push(this.vertex4);
 		return vertexes;
 	}
+
+	this.isSelected = function(){
+		return (this.line1.isSelected()&&this.line2.isSelected()&&this.line3.isSelected()&&this.line4.isSelected());
+	}
+
+	this.select = function(){
+		this.line1.select();
+		this.line2.select();
+		this.line3.select();
+		this.line4.select();
+	}
+
+	this.deselect = function(){
+		this.line1.deselect();
+		this.line2.deselect();
+		this.line3.deselect();
+		this.line4.deselect();
+	}
+
 
 	this.start = function(x,y){
 		//only the point for v1 is determined here, so we'll check the others later (they might combine)

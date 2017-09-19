@@ -10,9 +10,12 @@ var ctx = c.getContext("2d");
 
 var cursor;
 var grid;
-var gridSize = 10;
+var gridSize = 10; //this is only set by the grid - default is 10
 var leftPanelWidth = c.width/10;
 var buttonPane;
+
+var selectRangeVert = 10;
+var selectRangeElem = 1;
 
 //program option booleans
 var snap = true;
@@ -41,6 +44,14 @@ c.addEventListener('mouseup', function(evt){
 	mouseClick.rightDown = false;
 	mouseClick.held = false;
 	dragging = false;
+}, false);
+var locked = false; //should go in a closure so it's not polluting
+c.addEventListener('wheel', function(evt){
+	if(locked) return;
+  	locked = true;
+	dy = parseFloat((evt.deltaY/100).toFixed(2));
+	if (gridSize + dy > 2 && gridSize + dy < 20) {gridSize += dy; }
+	locked = false;
 }, false);
 
 c.addEventListener('keydown', function(evt){ 
@@ -93,9 +104,8 @@ function nearestVertex(dist,x,y){
 	var bestDist = 1000010;
 
 	for (var i=0; i<vertexes.length; i++){
-		if (vertexes[i].isNear(x,y,dist)) {
+		if (vertexes[i].isNear(x,y,selectRangeVert)) {
 			var aDist = Math.hypot(vertexes[i].x - x, vertexes[i].y - y);
-			console.log("aDist: " + aDist);
 			if (aDist < bestDist) {
 				ret = vertexes[i];
 				bestDist = aDist;
@@ -133,8 +143,9 @@ function init(){
 	buttonPane.addButton('rect');
 	buttonPane.addButton('line');
 	buttonPane.addButton('polygon');
+	buttonPane.addButton('arc');
 
-	grid = new Grid();
+	grid = new Grid(10);
 	dt = 0;
 }
 
@@ -145,15 +156,16 @@ function deselectAll(){
 function draw(){
 	var now = Date.now();
 
-	if (ctx.canvas.width != window.innerWidth){
-		ctx.canvas.width = window.innerWidth;
-		ctx.canvas.height = window.innerHeight;
+	if (c.width != window.innerWidth){
+		c.width = window.innerWidth;
+		c.height = window.innerHeight;
 	}
 
 	var lastX;
 	var lastY;
 	ctx.clearRect(0, 0, c.width, c.height);
 	if (showGrid) { grid.show(); }
+	if (gridSize != grid.getDensity()) { grid.setDensity(gridSize); }
 
 	//check if we are dragging by checking how far we are from the click and if the mouse is held
 	if (Math.sqrt(Math.pow(mouseClick.x-mousePos.x,2) + Math.pow(mouseClick.y-mousePos.y,2)) > 10) {
@@ -245,6 +257,12 @@ function draw(){
 				elements.push(rect);
 			}
 
+			//handle the rectangle tool
+			if (buttonPane.getSelectedTool() == "arc" && !elementIsDrawing){
+				var arc = new Arc();
+				arc.start(mouseClick.x, mouseClick.y);
+				elements.push(arc);
+			}
 
 			//handle the polygon tool
 			if (buttonPane.getSelectedTool() == "polygon" && !elementIsDrawing){
@@ -295,9 +313,9 @@ function draw(){
 function info(){
 	console.log("Total vertexes: " + vertexes.length + "  dt:" + dt);
 
-	//var a = "";
-	//for (var i=0; i<elements.length; i++){ a = a + elements[i].constructor.name + " "; }
-	//console.log(a);
+	var a = "Elements: [";
+	for (var i=0; i<elements.length; i++){ a = a + elements[i].constructor.name + " "; }
+	console.log(a + "]");
 	console.log("number of selected verts: " + SELECTED_VERTEXES);
 }
 
