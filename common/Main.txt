@@ -13,12 +13,14 @@ var grid;
 var gridSize = 10; //this is only set by the grid - default is 10
 var leftPanelWidth = c.width/10;
 var buttonPane;
+var infoBar;
 
 var selectRangeVert = 10;
 var selectRangeElem = 1;
 
 //program option booleans
 var snap = true;
+var snapOverride = false; //the cursor shouldn't snap whilst selecting
 var showGrid = true;
 
 var shift = false; //global flag to check if shift is pressed
@@ -47,17 +49,24 @@ c.addEventListener('mouseup', function(evt){
 }, false);
 var locked = false; //should go in a closure so it's not polluting
 c.addEventListener('wheel', function(evt){
+	//This is not how  you zoom.
 	if(locked) return;
   	locked = true;
 	dy = parseFloat((evt.deltaY/100).toFixed(2));
-	if (gridSize + dy > 2 && gridSize + dy < 20) {gridSize += dy; }
+	//if (gridSize + dy > 2 && gridSize + dy < 20) {
+		//gridSize += dy;
+		//for (var i=0; i<vertexes.length; i++){ vertexes[i].bump(); }
+	//}
 	locked = false;
 }, false);
 
 c.addEventListener('keydown', function(evt){ 
 	shift = evt.shiftKey; 
 	ctrl = evt.ctrlKey; 
-	enter = (evt.keyCode == 13); 
+	enter = (evt.keyCode == 13);
+	if (evt.key.match(/^[a-zA-Z() ]$/)) { infoBar.addInform(evt.key); }
+	if (evt.keyCode == 8) { infoBar.removeLastInfo(); }
+	if (evt.keyCode == 13) { infoBar.clearInfo(); }
 }, false);
 c.addEventListener('keyup'  , function(evt){ 
 	shift = evt.shiftKey; 
@@ -144,6 +153,8 @@ function init(){
 	buttonPane.addButton('line');
 	buttonPane.addButton('polygon');
 	buttonPane.addButton('arc');
+
+	infoBar = new InfoBar();
 
 	grid = new Grid(10);
 	dt = 0;
@@ -291,9 +302,9 @@ function draw(){
 	
 	//free the cursor from snaps when the select tool is being used
 	if (buttonPane.getSelectedTool() == "select"){
-		snap = false;
+		snapOverride = false;
 	} else {
-		//snap = !snap;
+		snapOverride = true;
 	}
 
 	for (var i=0; i<elements.length; i++){ elements[i].show(); } //show all elements
@@ -301,6 +312,7 @@ function draw(){
 	if (!currentTool.length <= 0) { currentTool[0].show(); } //show current tool
 
 	buttonPane.show();
+	infoBar.show();
 	cursor.show();
 	
 	dt = now - lastUpdate;

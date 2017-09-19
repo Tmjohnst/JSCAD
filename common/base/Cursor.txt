@@ -23,7 +23,7 @@ function Cursor(){
 			}
 		}
 
-		if (snap && mousePos.x > leftPanelWidth-1) {
+		if (mousePos.x > leftPanelWidth-1 && snapOverride) {
 			var tempX = this.pos.x;
 			var tempY = this.pos.y;
 			this.pos.x = Math.round(tempX/gridSize)*gridSize;

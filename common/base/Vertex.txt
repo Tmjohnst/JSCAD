@@ -5,6 +5,9 @@ function Vertex(x, y){
 	this.x = 0;
 	this.y = 0;
 
+	this.worldX = 0;
+	this.worldY = 0;
+
 	if (snap) { this.x = Math.round(x/gridSize)*gridSize || 0; }
 	else { this.x = x || 0; }
 
@@ -162,8 +165,8 @@ function Vertex(x, y){
 	}
 
 	this.setX = function(x){
-		if (snap) { this.x = Math.round(x/gridSize)*gridSize; }
-		else { this.x = x; }
+		if (snap) { this.x = Math.round(x/gridSize)*gridSize;}
+		else { this.x = x;}
 	}
 	
 	this.setY = function(y){
@@ -174,6 +177,10 @@ function Vertex(x, y){
 	this.set = function(x,y){
 		this.setX(x);
 		this.setY(y);
+	}
+
+	this.bump = function(){
+		this.set(this.x, this.y);
 	}
 
 	this.setMoving = function(x,y){

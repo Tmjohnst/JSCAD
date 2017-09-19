@@ -50,10 +50,11 @@ function PaneButton(x,y,width,height,text){
 			ctx.strokeStyle = '#008000';
 			ctx.stroke();
 		} else if(this.text == "arc") {
+			var r = this.width/3.5;
 			ctx.beginPath();
-			ctx.lineWidth = this.border;
-			ctx.rect(this.x+this.width/4, this.y+this.height/4, this.width/2, this.height/2);
 			ctx.strokeStyle = '#008000';
+			ctx.arc(x + this.width/2,y + this.height*3/5,r,0,Math.PI, true);
+			ctx.lineWidth = this.border;
 			ctx.stroke();
 		} else if(this.text == "select") {
 			ctx.beginPath();
