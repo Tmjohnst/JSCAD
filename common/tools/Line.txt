@@ -49,11 +49,22 @@ function Line(v1, v2){
 		}
 	}
 
+	this.getSlope = function(){
+		return (this.vertex2.y-this.vertex1.y)/(this.vertex2.x-this.vertex1.x);
+	}
+
 	this.isNear = function(x,y,dist){
 		var distAC = Math.sqrt((x-this.vertex1.x)*(x-this.vertex1.x) + (y-this.vertex1.y)*(y-this.vertex1.y));
 		var distAB = Math.sqrt((this.vertex2.x-this.vertex1.x)*(this.vertex2.x-this.vertex1.x) + (this.vertex2.y-this.vertex1.y)*(this.vertex2.y-this.vertex1.y));
 		var distBC = Math.sqrt((x-this.vertex2.x)*(x-this.vertex2.x) + (y-this.vertex2.y)*(y-this.vertex2.y));
 		return distAC + distBC - distAB < dist;
+	}
+
+	this.dist = function(x,y){
+		var distAC = Math.sqrt((x-this.vertex1.x)*(x-this.vertex1.x) + (y-this.vertex1.y)*(y-this.vertex1.y));
+		var distAB = Math.sqrt((this.vertex2.x-this.vertex1.x)*(this.vertex2.x-this.vertex1.x) + (this.vertex2.y-this.vertex1.y)*(this.vertex2.y-this.vertex1.y));
+		var distBC = Math.sqrt((x-this.vertex2.x)*(x-this.vertex2.x) + (y-this.vertex2.y)*(y-this.vertex2.y));
+		return distAC + distBC - distAB;
 	}
 	
 	this.select = function(){

@@ -43,6 +43,21 @@ function PaneButton(x,y,width,height,text){
 			ctx.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
 			ctx.lineWidth = this.border;
 			ctx.stroke();
+		} else if(this.text == "dimension") {
+			ctx.beginPath();
+			ctx.strokeStyle = '#008000';
+			var scl = 4;
+			ctx.moveTo(this.x+this.width/scl,this.y+this.width/scl);
+			ctx.lineTo(this.x+this.width - this.width/scl,this.y+this.height - this.width/scl);
+
+			ctx.moveTo(this.x+this.width/scl+3,this.y+this.width/scl-3);
+			ctx.lineTo(this.x+this.width/scl-3,this.y+this.width/scl+3);
+
+			ctx.moveTo(this.x+this.width - this.width/scl+3,this.y+this.height - this.width/scl-3);
+			ctx.lineTo(this.x+this.width - this.width/scl-3,this.y+this.height - this.width/scl+3);
+
+			ctx.lineWidth = this.border;
+			ctx.stroke();
 		} else if(this.text == "rect") {
 			ctx.beginPath();
 			ctx.lineWidth = this.border;

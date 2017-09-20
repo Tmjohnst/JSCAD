@@ -133,6 +133,15 @@ function nearestVertex(x,y){
 	return ret;
 }
 
+function nearestElement(x,y){
+	var ret = false;
+
+	for (var i=0; i<elements.length; i++){
+		if (elements[i].isNear(x,y,gridSize*1.5)) { ret = elements[i]; }
+	}
+	return ret;
+}
+
 function pushVertex(v){
 	vertexes.push(v);
 	infoBar.inform("New vertex: [" + v.x + ", " + v.y + "]");
@@ -189,6 +198,7 @@ function init(){
 	buttonPane.addButton('line');
 	buttonPane.addButton('polygon');
 	buttonPane.addButton('arc');
+	buttonPane.addButton('dimension');
 
 	infoBar = new InfoBar();
 
@@ -289,6 +299,13 @@ function draw(){
 				line.start(mouseClick.x, mouseClick.y);
 				this.pushElement(line)
 			}
+
+			//handle the dimension tool
+			if (buttonPane.getSelectedTool() == "dimension" && !elementIsDrawing){ //removed !drawing
+				var dimension = new Dimension();
+				dimension.start(mouseClick.x, mouseClick.y);
+				this.pushElement(dimension)
+			}
 		
 			//handle the circle tool
 			if (buttonPane.getSelectedTool() == "circle" && !elementIsDrawing){
@@ -336,8 +353,8 @@ function draw(){
 		this.lastY = mousePos.y;
 	}
 	
-	//free the cursor from snaps when the select tool is being used
-	if (buttonPane.getSelectedTool() == "select"){
+	//free the cursor from snaps when the select tool or dimension tool is being used
+	if (buttonPane.getSelectedTool() == "select" || buttonPane.getSelectedTool() == "dimension"){
 		snapOverride = false;
 	} else {
 		snapOverride = true;

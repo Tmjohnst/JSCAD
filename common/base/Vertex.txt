@@ -5,8 +5,19 @@ function Vertex(x, y){
 	this.x = 0;
 	this.y = 0;
 
-	this.worldX = 0;
-	this.worldY = 0;
+	this.worldX = 0; //TODO: proper translation from grid coords to world coords (for zooming, saving, scaling, etc)
+	this.worldY = 0; //TODO
+
+	this.constraints = {
+		horizontal: false,
+		vertical: false,
+		radius: false,
+		radiusDim: 0,
+		length: false,
+		lengthDim: 0,
+		fixed: false,
+		fixedDim: {x:0, y:0}
+	}
 
 	if (snap) { this.x = Math.round(x/gridSize)*gridSize || 0; }
 	else { this.x = x || 0; }

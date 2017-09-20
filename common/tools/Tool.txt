@@ -4,6 +4,17 @@ function Tool(){
 	this.hovering = false;
 	this.dim = false;
 	this.parents = new Array();
+
+	this.constraints = {
+		horizontal: false,
+		vertical: false,
+		radius: false,
+		radiusDim: 0,
+		length: false,
+		lengthDim: 0,
+		fixed: false,
+		fixedDim: {x:0, y:0}
+	}
 	
 	this.addParent = function(p){
 		var alreadyParent = false;
