@@ -63,6 +63,12 @@ function Circle(){
 	this.isSelected = function(){
 		return (this.vertex1.isSelected() && this.vertex2.isSelected());
 	}
+	
+	this.delete = function(){
+		this.vertex1.removeParent(this);
+		this.vertex2.removeParent(this);
+		deleteElement(this);
+	}
 
 	this.hover  = function(){ this.hovering = true; }
 

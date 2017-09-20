@@ -49,6 +49,20 @@ function Selector(){
 			}
 			enter = false;
 		}
+
+		if (deleteKey) {
+			for (var i=0;i<elements.length;i++){
+				if (elements[i].isSelected()){ 
+					elements[i].delete();
+				}
+			}
+			for (var j=0;j<vertexes.length;j++){
+				if (vertexes[j].isSelected()){ 
+					vertexes[j].delete();
+				}
+			}
+			deleteKey = false;
+		}
 		
 		if (dragging && !ctrl) {
 			ctx.beginPath();

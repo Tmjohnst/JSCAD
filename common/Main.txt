@@ -26,6 +26,7 @@ var showGrid = true;
 var shift = false; //global flag to check if shift is pressed
 var ctrl = false; //global flag to check if ctrl is pressed
 var enter = false; //global flag to check if enter is pressed
+var deleteKey = false; //global flag to check if delete is pressed
 var dragging = false; //global flag to check if we're dragging
 
 var framerate = 60; //fps
@@ -64,6 +65,7 @@ c.addEventListener('keydown', function(evt){
 	shift = evt.shiftKey; 
 	ctrl = evt.ctrlKey; 
 	enter = (evt.keyCode == 13);
+	deleteKey = (evt.keyCode == 46);
 	if (evt.key.match(/^[a-zA-Z() ]$/)) { infoBar.addInform(evt.key); }
 	if (evt.keyCode == 8) { infoBar.removeLastInfo(); }
 	if (evt.keyCode == 13) { infoBar.clearInfo(); }
@@ -108,13 +110,18 @@ function getMousePos(){
 	return mousePos;
 }
 
-function nearestVertex(dist,x,y){
+function nearestVertex(x,y){
 	var ret = {};
 	var bestDist = 1000010;
+	this.x = x;
+	this.y = y;
+
+	if (snap) { this.x = Math.round(x/gridSize)*gridSize; } else { this.x = x; }
+	if (snap) { this.y = Math.round(y/gridSize)*gridSize; } else { this.y = y; }
 
 	for (var i=0; i<vertexes.length; i++){
-		if (vertexes[i].isNear(x,y,selectRangeVert)) {
-			var aDist = Math.hypot(vertexes[i].x - x, vertexes[i].y - y);
+		if (vertexes[i].isNear(this.x,this.y,gridSize*1.5)) {
+			var aDist = Math.hypot(vertexes[i].x - this.x, vertexes[i].y - this.y);
 			if (aDist < bestDist) {
 				ret = vertexes[i];
 				bestDist = aDist;
@@ -122,11 +129,40 @@ function nearestVertex(dist,x,y){
 		}
 	}
 	if (bestDist == 1000010) { ret = false; }
+	console.log(ret);
 	return ret;
 }
 
 function pushVertex(v){
 	vertexes.push(v);
+	infoBar.inform("New vertex: [" + v.x + ", " + v.y + "]");
+}
+
+function deleteVertex(v){
+	for (var i=0; i<vertexes.length; i++){
+		if (vertexes[i] === v) {
+			vertexes.splice(i, 1);
+			infoBar.inform("Deleted vertex: [" + v.x + ", " + v.y + "]");
+		}
+	}
+
+	deselectAll();
+}
+
+function pushElement(e){
+	elements.push(e);
+	infoBar.inform("New element: [" + e.constructor.name + "]");
+}
+
+function deleteElement(e){
+	for (var i=0; i<elements.length; i++){
+		if (elements[i] === e) {
+			elements.splice(i, 1);
+			infoBar.inform("Deleted element: [" + e.constructor.name + "]");
+		}
+	}
+
+	deselectAll();
 }
 
 function getAllSelectedVertexes(){
@@ -251,35 +287,35 @@ function draw(){
 			if (buttonPane.getSelectedTool() == "line" && !elementIsDrawing){ //removed !drawing
 				var line = new Line();
 				line.start(mouseClick.x, mouseClick.y);
-				elements.push(line);
+				this.pushElement(line)
 			}
 		
 			//handle the circle tool
 			if (buttonPane.getSelectedTool() == "circle" && !elementIsDrawing){
 				var circle = new Circle();
 				circle.start(mouseClick.x, mouseClick.y);
-				elements.push(circle);
+				this.pushElement(circle);
 			}
 
 			//handle the rectangle tool
 			if (buttonPane.getSelectedTool() == "rect" && !elementIsDrawing){
 				var rect = new Rect();
 				rect.start(mouseClick.x, mouseClick.y);
-				elements.push(rect);
+				this.pushElement(rect);
 			}
 
 			//handle the rectangle tool
 			if (buttonPane.getSelectedTool() == "arc" && !elementIsDrawing){
 				var arc = new Arc();
 				arc.start(mouseClick.x, mouseClick.y);
-				elements.push(arc);
+				this.pushElement(arc);
 			}
 
 			//handle the polygon tool
 			if (buttonPane.getSelectedTool() == "polygon" && !elementIsDrawing){
 				var poly = new Polygon();
 				poly.start(mouseClick.x, mouseClick.y);
-				elements.push(poly);
+				this.pushElement(poly);
 			}
 
 			//advance any element if it's currently drawing

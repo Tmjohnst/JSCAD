@@ -41,6 +41,13 @@ function Polygon(){
 		return false;
 	}
 
+	this.delete = function(){
+		for (var i=0; i<this.polyLines.length; i++){
+			this.polyLines[i].removeParent(this);
+		}
+		deleteElement(this);
+	}
+
 	this.hover = function(){ 
 		this.hovering = true;
 		for (var i=0; i<this.polyLines.length; i++){
@@ -65,8 +72,8 @@ function Polygon(){
 	}
 
 	this.start = function(x,y){
-		if (nearestVertex(5,x,y)) {
-			this.v1 = nearestVertex(5,x,y);
+		if (nearestVertex(x,y)) {
+			this.v1 = nearestVertex(x,y);
 		} else {
 			this.v1 = new Vertex(x,y);
 			pushVertex(this.v1);
@@ -75,26 +82,32 @@ function Polygon(){
 	}
 
 	this.end = function(x,y){
-		this.polyLines.push(new Line(this.polyLines[this.polyLines.length-1].v2(), this.v1));
+		var d = new Line(this.polyLines[this.polyLines.length-1].v2(), this.v1);
+		d.addParent(this);
+		this.polyLines.push(d);
 		this.polyLines[this.polyLines.length-1].deselect();
 		this.finished = true;
 	}
 
 	this.step = function(x,y){
 		this.a = {};
-		if (nearestVertex(5,x,y)) {
-			this.a = nearestVertex(5,x,y);
+		if (nearestVertex(x,y)) {
+			this.a = nearestVertex(x,y);
 		} else {
 			this.a = new Vertex(x,y);
 			pushVertex(this.a);
 		}
 
 		if (this.polyLines.length == 0) {
-			this.polyLines.push(new Line(this.v1, this.a));
+			var d  = new Line(this.v1, this.a);
+			d.addParent(this);
+			this.polyLines.push(d);
 			this.v1.deselect();
 			this.a.select();
 		} else {
-			this.polyLines.push(new Line(this.polyLines[this.polyLines.length-1].v2(), this.a));
+			var d = new Line(this.polyLines[this.polyLines.length-1].v2(), this.a);
+			d.addParent(this);
+			this.polyLines.push(d);
 			this.polyLines[this.polyLines.length-1].deselect();
 			this.a.select();
 		}

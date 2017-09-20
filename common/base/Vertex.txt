@@ -61,9 +61,20 @@ function Vertex(x, y){
 	this.removeParent = function(p){
 		for (var i=0; i<this.parents.length; i++) {
 			if (p === this.parents[i]) { 
-				this.parents[i].splice(i, 1);
+				this.parents.splice(i, 1);
 			}
 		}
+		
+		if (this.parents.length == 0) { this.delete(); }
+	}
+	
+	this.delete = function(){
+		if (this.parents.length != 0) { 
+			for (var i=0; i<this.parents.length; i++) {
+				this.parents[i].delete();
+			}
+		}
+		deleteVertex(this);
 	}
 
 	this.show = function(){
