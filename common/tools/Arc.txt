@@ -1,5 +1,6 @@
 function Arc(v1, v2, v3){
 	//this is a 3-point arc, you place v1, then v2, then set the radius with v3
+	Tool.call(this);
 	var vertex1Set = false;
 	var vertex2Set = false;
 	var vertex3Set = false;
@@ -12,9 +13,6 @@ function Arc(v1, v2, v3){
 	if (v2) this.vertex2Set = true;
 	if (v3) this.vertex3Set = true;
 	
-	this.finished = false;
-	this.hovering = false;
-	this.dim = false;
 	this.radius = 0;
 	this.arcDraw = {x:0, y:0, r:0, sa:0, ea:0};
 
@@ -85,24 +83,12 @@ function Arc(v1, v2, v3){
 		return withinAngle && withinRadius;
 	}
 
-	this.between = function(a,b,c){
-		if (a > b) {
-			return (c <= a && c >= b);
-		} else {
-			return (c <= b && c >= a);
-		}
-	}
-
 	this.delete = function(){
 		this.vertex1.removeParent(this);
 		this.vertex2.removeParent(this);
 		this.vertex3.removeParent(this);
 		deleteElement(this);
 	}
-
-	this.hover = function(){ this.hovering = true; }
-
-	this.unhover = function(){ this.hovering = false; }
 	
 	this.select = function(){
 		this.vertex1.select();

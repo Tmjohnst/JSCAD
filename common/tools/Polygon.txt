@@ -1,8 +1,7 @@
 function Polygon(){
+	Tool.call(this);
 	this.polyLines = new Array();
-	var finished = false;
 	var v1;
-	this.hovering = false;
 
 	this.show = function(){
 		if (mouseClick.rightDown && !finished) { 

@@ -1,26 +1,28 @@
-function Circle(){
+function Dimension(v1, v2){
 	Tool.call(this);
 	var vertex1Set = false;
 	var vertex2Set = false;
-	var vertex1;
-	var vertex2;
-	var radius;
+	this.vertex1 = v1 || {};
+	this.vertex2 = v2 || {};
 
-	this.show = function(){
+	if (v1) this.vertex1Set = true;
+	if (v2) this.vertex2Set = true;
+
+	this.show = function(){	
 		if (this.vertex1Set && this.vertex2Set) {
-			if (this.vertex1.selected && this.vertex2.selected){ 
+			if (this.vertex1.selected && this.vertex2.selected){
 				ctx.beginPath();
-				ctx.strokeStyle = '#2BD1FF';
-				this.radius = Math.hypot(this.vertex1.x - this.vertex2.x, this.vertex1.y - this.vertex2.y);
-				ctx.arc(this.vertex1.x,this.vertex1.y,this.radius,0,2*Math.PI, false);
+				ctx.moveTo(this.vertex1.x, this.vertex1.y);
+				ctx.lineTo(this.vertex2.x, this.vertex2.y);
 				ctx.lineWidth = 5;
+				ctx.strokeStyle = '#2BD1FF';
 				ctx.globalAlpha = 0.5;
 				ctx.stroke();
 				ctx.globalAlpha = 1;
-			} else if(this.hovering) {
+			} else if (this.hovering) {
 				ctx.beginPath();
-				this.radius = Math.hypot(this.vertex1.x - this.vertex2.x, this.vertex1.y - this.vertex2.y);
-				ctx.arc(this.vertex1.x,this.vertex1.y,this.radius,0,2*Math.PI, false);
+				ctx.moveTo(this.vertex1.x, this.vertex1.y);
+				ctx.lineTo(this.vertex2.x, this.vertex2.y);
 				ctx.lineWidth = 8;
 				ctx.strokeStyle = '#2BD1FF';
 				ctx.globalAlpha = 0.25;
@@ -29,53 +31,49 @@ function Circle(){
 			}
 
 			ctx.beginPath();
-			ctx.strokeStyle = '#000000';
-			this.radius = Math.hypot(this.vertex1.x - this.vertex2.x, this.vertex1.y - this.vertex2.y);
-			ctx.arc(this.vertex1.x,this.vertex1.y,this.radius,0,2*Math.PI, false);
+			ctx.moveTo(this.vertex1.x, this.vertex1.y);
+			ctx.lineTo(this.vertex2.x, this.vertex2.y);
 			ctx.lineWidth = 1;
+			ctx.strokeStyle = '#000000';
 			ctx.stroke();
 		} else if(this.vertex1Set && !this.vertex2Set){
-
-			var compX = Math.round(mousePos.x/gridSize)*gridSize;
-			if (!snap) { compX = mousePos.x; }
-			var compY = Math.round(mousePos.y/gridSize)*gridSize;
-			if (!snap) { compY = mousePos.y; }
-
-			this.radius = Math.hypot(this.vertex1.x - compX, this.vertex1.y - compY);
+			this.vertex2.set(getMousePos().x, getMousePos().y);
 			ctx.beginPath();
-			ctx.strokeStyle = '#000000';
-			ctx.arc(this.vertex1.x,this.vertex1.y,this.radius,0,2*Math.PI, false);
+			ctx.moveTo(this.vertex1.x, this.vertex1.y);
+			ctx.lineTo(this.vertex2.x, this.vertex2.y);
 			ctx.lineWidth = 1;
+			ctx.strokeStyle = '#000000';
 			ctx.stroke();
 
-			this.vertex2.set(getMousePos().x, getMousePos().y);
 			this.vertex2.show();
 		}
 	}
 
 	this.isNear = function(x,y,dist){
-		var d = Math.sqrt((this.vertex1.x - x)*(this.vertex1.x - x) + (this.vertex1.y - y)*(this.vertex1.y - y));
-		return (d > (this.radius - dist))&&(d < (this.radius + dist));
-	}
-
-	this.isSelected = function(){
-		return (this.vertex1.isSelected() && this.vertex2.isSelected());
+		var distAC = Math.sqrt((x-this.vertex1.x)*(x-this.vertex1.x) + (y-this.vertex1.y)*(y-this.vertex1.y));
+		var distAB = Math.sqrt((this.vertex2.x-this.vertex1.x)*(this.vertex2.x-this.vertex1.x) + (this.vertex2.y-this.vertex1.y)*(this.vertex2.y-this.vertex1.y));
+		var distBC = Math.sqrt((x-this.vertex2.x)*(x-this.vertex2.x) + (y-this.vertex2.y)*(y-this.vertex2.y));
+		return distAC + distBC - distAB < dist;
 	}
 	
+	this.select = function(){
+		this.vertex1.select();
+		this.vertex2.select();
+	}
+
 	this.delete = function(){
 		this.vertex1.removeParent(this);
 		this.vertex2.removeParent(this);
 		deleteElement(this);
 	}
+		
+	this.isSelected = function(){
+		return (this.vertex1.isSelected() && this.vertex2.isSelected());
+	}
 
 	this.deselect = function(){
 		this.vertex1.deselect();
 		this.vertex2.deselect();
-	}
-
-	this.select = function(){
-		this.vertex1.select();
-		this.vertex2.select();
 	}
 
 	this.getVertexes = function(){
@@ -95,8 +93,9 @@ function Circle(){
 			this.vertex1 = new Vertex(x,y);
 			pushVertex(this.vertex1);
 		}
-		
+
 		this.vertex2 = new Vertex(x,y);
+
 		this.vertex1.addParent(this);
 		this.vertex1Set = true;
 		this.vertex1.select();
@@ -108,15 +107,13 @@ function Circle(){
 			this.vertex2 = this.v;
 			this.vertex2Set = true;
 		}
-
 		var compX = Math.round(x/gridSize)*gridSize;
 		if (!snap) { compX = x; }
 		var compY = Math.round(y/gridSize)*gridSize;
 		if (!snap) { compY = y; }
 
 		if(!(this.vertex1.x == compX && this.vertex1.y == compY) && !this.vertex2Set){
-			this.vertex2 = new Vertex(x,y)
-			this.radius = Math.hypot(this.vertex1.x - this.vertex2.x, this.vertex1.y - this.vertex2.y);
+			this.vertex2 = new Vertex(x,y);
 			pushVertex(this.vertex2);
 		}
 

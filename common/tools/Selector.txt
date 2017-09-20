@@ -1,7 +1,7 @@
 function Selector(){
+	Tool.call(this);
 	var selectedVertexes = new Array();
 
-	var finished = false;
 	var windowSet = false;
 	var windowDrawing = false;
 
@@ -76,14 +76,11 @@ function Selector(){
 		}
 	}
 
-	this.getVertexes = function(){
-	}
+	this.getVertexes = function(){}
 
-	this.deselect = function(){		
-	}
+	this.deselect = function(){}
 
-	this.start = function(x,y){
-	}
+	this.start = function(x,y){}
 
 	this.end = function(x,y){
 		this.finished = true;

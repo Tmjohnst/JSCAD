@@ -1,4 +1,5 @@
 function Line(v1, v2){
+	Tool.call(this);
 	var vertex1Set = false;
 	var vertex2Set = false;
 	this.vertex1 = v1 || {};
@@ -6,14 +7,8 @@ function Line(v1, v2){
 
 	if (v1) this.vertex1Set = true;
 	if (v2) this.vertex2Set = true;
-	
-	this.finished = false;
-	this.hovering = false;
-	this.dim = false;
-	this.parents = new Array();
 
 	this.show = function(){	
-		console.log("drawing line");
 		if (this.vertex1Set && this.vertex2Set) {
 			if (this.vertex1.selected && this.vertex2.selected){
 				ctx.beginPath();
@@ -54,42 +49,12 @@ function Line(v1, v2){
 		}
 	}
 
-	this.addParent = function(p){
-		var alreadyParent = false;
-		for (var i=0; i<this.parents.length; i++) {
-			if (p === this.parents[i]) { alreadyParent = true; }
-		}
-		if (!alreadyParent) { this.parents.push(p); }
-	}
-	
-	this.printParents = function(){
-		parentsPrint = "Parents: ";
-		for (var i=0; i<this.parents.length; i++) {
-			parentsPrint += " [" + this.parents[i].constructor.name + "], ";
-		}
-		console.log(parentsPrint);
-	}
-
-	this.removeParent = function(p){
-		for (var i=0; i<this.parents.length; i++) {
-			if (p === this.parents[i]) { 
-				this.parents.splice(i, 1);
-			}
-		}
-		
-		if (this.parents.length == 0) { this.delete(); }
-	}
-
 	this.isNear = function(x,y,dist){
 		var distAC = Math.sqrt((x-this.vertex1.x)*(x-this.vertex1.x) + (y-this.vertex1.y)*(y-this.vertex1.y));
 		var distAB = Math.sqrt((this.vertex2.x-this.vertex1.x)*(this.vertex2.x-this.vertex1.x) + (this.vertex2.y-this.vertex1.y)*(this.vertex2.y-this.vertex1.y));
 		var distBC = Math.sqrt((x-this.vertex2.x)*(x-this.vertex2.x) + (y-this.vertex2.y)*(y-this.vertex2.y));
 		return distAC + distBC - distAB < dist;
 	}
-
-	this.hover = function(){ this.hovering = true; }
-
-	this.unhover = function(){ this.hovering = false; }
 	
 	this.select = function(){
 		this.vertex1.select();
