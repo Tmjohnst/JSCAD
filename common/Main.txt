@@ -28,6 +28,7 @@ var ctrl = false; //global flag to check if ctrl is pressed
 var enter = false; //global flag to check if enter is pressed
 var deleteKey = false; //global flag to check if delete is pressed
 var dragging = false; //global flag to check if we're dragging
+var dblclick = false; //global flag to watch for double clicks
 
 var framerate = 60; //fps
 var ONE_FRAME_TIME = 1000 / framerate;
@@ -37,6 +38,7 @@ var lastUpdate = Date.now();
 //var VERTEXES = 0; //total vertexes created
 var SELECTED_VERTEXES = 0; //to indicate whether or not we're selecting
 
+c.addEventListener('dblclick', function(evt){ doubleClick(); }, false);
 c.addEventListener('mousemove', function(evt){ mousePos = handleMousePos(evt); }, false);
 c.addEventListener('mousedown', function(evt){
 	mouseClick = handleMousePos(evt);
@@ -90,6 +92,10 @@ var mouseClick = {
 	y: 0
 };
 
+function doubleClick(){
+	dblclick = true;
+}
+
 function handleMousePos(evt){
 	var rect = c.getBoundingClientRect();
 	var pos = new Vector(Math.floor((evt.clientX - rect.left)/(rect.right-rect.left)*c.width), Math.floor((evt.clientY - rect.top)/(rect.bottom-rect.top)*c.height))
@@ -120,7 +126,7 @@ function nearestVertex(x,y){
 	if (snap) { this.y = Math.round(y/gridSize)*gridSize; } else { this.y = y; }
 
 	for (var i=0; i<vertexes.length; i++){
-		if (vertexes[i].isNear(this.x,this.y,gridSize*1.5)) {
+		if (vertexes[i].isNear(this.x,this.y,gridSize*1.1)) {
 			var aDist = Math.hypot(vertexes[i].x - this.x, vertexes[i].y - this.y);
 			if (aDist < bestDist) {
 				ret = vertexes[i];
@@ -370,6 +376,7 @@ function draw(){
 	
 	dt = now - lastUpdate;
 	lastUpdate = now;
+	dblclick = false; //if nothing handled the dblclick, we didn't need it
 	mouseClick.down = false; // if nothing handled the mouseclick, we didn't need it
 	mouseClick.rightDown = false;
 }

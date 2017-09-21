@@ -39,6 +39,17 @@ function Selector(){
 				if (vertexes[j].isSelected()){ vertexes[j].setSelect(dx, dy); }
 			}
 		}
+	
+		if (ctrl && dblclick && SELECTED_VERTEXES > 0){
+			for (var j=0;j<vertexes.length;j++){
+				if (vertexes[j].isSelected()){ 
+					var parents = vertexes[j].getParents();
+					if (parents.length > 0) {
+						for(var i=0;i<parents.length;i++){parents[i].select();}
+					}
+				}
+			}
+		}
 
 		if (enter) {
 			for (var j=0;j<vertexes.length;j++){

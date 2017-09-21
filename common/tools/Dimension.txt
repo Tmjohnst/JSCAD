@@ -46,6 +46,13 @@ function Dimension(){
 		} 
 		return false;
 	}
+
+	this.pointNearest = function(x1, y1, x2, y2, x, y){
+		var px = 0;
+		var py = 0;
+		
+		return false;
+	}
 	
 	this.select = function(){
 		this.select = true;

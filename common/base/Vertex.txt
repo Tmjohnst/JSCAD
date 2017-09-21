@@ -61,6 +61,10 @@ function Vertex(x, y){
 		if (!alreadyParent) { this.parents.push(p); }
 	}
 	
+	this.getParents = function(){
+		return this.parents;
+	}
+
 	this.printParents = function(){
 		parentsPrint = "Parents: ";
 		for (var i=0; i<this.parents.length; i++) {
