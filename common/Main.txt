@@ -8,6 +8,15 @@ var keysDown = new Array(); //all keys pressed
 var c = document.getElementById("canvas");
 var ctx = c.getContext("2d");
 
+var cui = document.getElementById("canvasUI");
+var ctxUI = cui.getContext("2d");
+
+var cbg = document.getElementById("canvasBack");
+var ctxBG = cbg.getContext("2d");
+
+var cib = document.getElementById("canvasInfo");
+var ctxIB = cib.getContext("2d");
+
 var cursor;
 var grid;
 var gridSize = 10; //this is only set by the grid - default is 10
@@ -30,40 +39,36 @@ var deleteKey = false; //global flag to check if delete is pressed
 var dragging = false; //global flag to check if we're dragging
 var dblclick = false; //global flag to watch for double clicks
 
-var framerate = 60; //fps
+var framerate = 120; //fps
 var ONE_FRAME_TIME = 1000 / framerate;
 var dt;
 var lastUpdate = Date.now();
 
 //var VERTEXES = 0; //total vertexes created
 var SELECTED_VERTEXES = 0; //to indicate whether or not we're selecting
-
-c.addEventListener('dblclick', function(evt){ doubleClick(); }, false);
-c.addEventListener('mousemove', function(evt){ mousePos = handleMousePos(evt); }, false);
-c.addEventListener('mousedown', function(evt){
+window.addEventListener('resize', function(evt){resize(evt);}, false);
+window.addEventListener('dblclick', function(evt){ doubleClick(); console.log("DSF");}, false);
+window.addEventListener('mousemove', function(evt){ mousePos = handleMousePos(evt); }, false);
+window.addEventListener('mousedown', function(evt){
 	mouseClick = handleMousePos(evt);
 	mouseClick.held = true; //never gets set externally
 }, false);
-c.addEventListener('mouseup', function(evt){ 
+window.addEventListener('mouseup', function(evt){ 
 	mouseClick.down = false;
 	mouseClick.rightDown = false;
 	mouseClick.held = false;
 	dragging = false;
 }, false);
 var locked = false; //should go in a closure so it's not polluting
-c.addEventListener('wheel', function(evt){
+window.addEventListener('wheel', function(evt){
 	//This is not how  you zoom.
 	if(locked) return;
   	locked = true;
 	dy = parseFloat((evt.deltaY/100).toFixed(2));
-	//if (gridSize + dy > 2 && gridSize + dy < 20) {
-		//gridSize += dy;
-		//for (var i=0; i<vertexes.length; i++){ vertexes[i].bump(); }
-	//}
 	locked = false;
 }, false);
 
-c.addEventListener('keydown', function(evt){ 
+window.addEventListener('keydown', function(evt){ 
 	shift = evt.shiftKey; 
 	ctrl = evt.ctrlKey; 
 	enter = (evt.keyCode == 13);
@@ -72,7 +77,7 @@ c.addEventListener('keydown', function(evt){
 	if (evt.keyCode == 8) { infoBar.removeLastInfo(); }
 	if (evt.keyCode == 13) { infoBar.clearInfo(); }
 }, false);
-c.addEventListener('keyup'  , function(evt){ 
+window.addEventListener('keyup'  , function(evt){ 
 	shift = evt.shiftKey; 
 	ctrl = evt.ctrlKey; 
 	enter = (evt.keyCode == 13); 
@@ -92,23 +97,28 @@ var mouseClick = {
 	y: 0
 };
 
+function resize(evt){
+	c.width = window.innerWidth;
+	c.style.leftMargin = leftPanelWidth;
+	c.height = window.innerHeight;
+
+	cbg.width = window.innerWidth;
+	cbg.height = window.innerHeight;
+	drawBG();
+	
+	cib.width = window.innerWidth;
+}
+
 function doubleClick(){
 	dblclick = true;
 }
 
 function handleMousePos(evt){
-	var rect = c.getBoundingClientRect();
-	var pos = new Vector(Math.floor((evt.clientX - rect.left)/(rect.right-rect.left)*c.width), Math.floor((evt.clientY - rect.top)/(rect.bottom-rect.top)*c.height))
-	var leftClick = false;
-	var rightClick = false;
-	if (evt.button == 0) { leftClick = true; }
-	if (evt.button == 2) { rightClick = true; }
-
 	return {
-		rightDown: rightClick,
-		down: leftClick,
-		x: pos.x,
-		y: pos.y
+		rightDown: evt.button == 2,
+		down: evt.button == 0,
+		x: evt.clientX,
+		y: evt.clientY
 	};
 }
 
@@ -207,28 +217,48 @@ function init(){
 	buttonPane.addButton('dimension');
 
 	infoBar = new InfoBar();
-
 	grid = new Grid(10);
 	dt = 0;
+
+	if (gridSize != grid.getDensity()) { grid.setDensity(gridSize); }
+	c.width = window.innerWidth;
+	c.style.leftMargin = leftPanelWidth;
+	c.height = window.innerHeight;
+	
+	cib.width = window.innerWidth;
+	cib.height = infoBar.getHeight();
+	cib.style.top = c.height-cib.height;
+	drawBG();
+	drawUI();
+	drawIB();
 }
 
 function deselectAll(){
 	for (var i=0; i<vertexes.length; i++){ vertexes[i].deselect(); }
 }
 
+function drawUI(){
+	cui.width = leftPanelWidth;
+	cui.height = window.innerHeight;
+	buttonPane.show();
+}
+
+function drawIB(){
+	cib.width = window.innerWidth;
+	infoBar.show();
+}
+
+function drawBG(){
+	cbg.width = window.innerWidth;
+	cbg.height = window.innerHeight;
+	if (showGrid) { grid.show(); }
+}
+
 function draw(){
 	var now = Date.now();
-
-	if (c.width != window.innerWidth){
-		c.width = window.innerWidth;
-		c.height = window.innerHeight;
-	}
-
 	var lastX;
 	var lastY;
 	ctx.clearRect(0, 0, c.width, c.height);
-	if (showGrid) { grid.show(); }
-	if (gridSize != grid.getDensity()) { grid.setDensity(gridSize); }
 
 	//check if we are dragging by checking how far we are from the click and if the mouse is held
 	if (Math.sqrt(Math.pow(mouseClick.x-mousePos.x,2) + Math.pow(mouseClick.y-mousePos.y,2)) > 10) {
@@ -266,6 +296,7 @@ function draw(){
 			if (buttonPane.getSelectedTool() != "select") {
 				this.deselectAll();
 			}
+			drawUI();
 		}
 
 		if(mouseClick.x < leftPanelWidth && !elementIsDrawing) {
@@ -295,6 +326,8 @@ function draw(){
 			} else {
 				toolIsDrawing = false;
 			}
+			drawUI();
+			console.log("button");
 		} 
 		
 		//if we are drawing and it's within the canvas
@@ -369,22 +402,24 @@ function draw(){
 	for (var i=0; i<elements.length; i++){ elements[i].show(); } //show all elements
 	for (var i=0; i<vertexes.length; i++){ vertexes[i].show(); } //show all vertexes
 	if (!currentTool.length <= 0) { currentTool[0].show(); } //show current tool
+	if (mousePos.x >= leftPanelWidth) { cursor.show(); }
 
-	buttonPane.show();
-	infoBar.show();
-	cursor.show();
-	
 	dt = now - lastUpdate;
 	lastUpdate = now;
 	dblclick = false; //if nothing handled the dblclick, we didn't need it
 	mouseClick.down = false; // if nothing handled the mouseclick, we didn't need it
 	mouseClick.rightDown = false;
+	enter = false;
+	deleteKey = false;
+	
+	drawIB();
+	requestAnimationFrame(draw);
 }
 
 //Gives us info about what's drawn every second
 function info(){
 	console.log("Total vertexes: " + vertexes.length + "  dt:" + dt);
-
+	console.log("mouse pos: (" + mousePos.x + ", " + mousePos.y + ")");
 	var a = "Elements: [";
 	for (var i=0; i<elements.length; i++){ a = a + elements[i].constructor.name + " "; }
 	console.log(a + "]");
@@ -392,5 +427,5 @@ function info(){
 }
 
 init();
-setInterval(draw, ONE_FRAME_TIME);
+requestAnimationFrame(draw);
 setInterval(info, 1000);

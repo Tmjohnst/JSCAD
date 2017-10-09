@@ -8,8 +8,8 @@ function Selector(){
 	this.vertex1Set = false;
 	this.vertex1 = new Vertex();
 
-	var refX = mousePos.x;
-	var refY = mousePos.y;
+	var refX = getMousePos().x;
+	var refY = getMousePos().y;
 	
 	var moveVertexes = false;
 
@@ -29,25 +29,24 @@ function Selector(){
 			} 
 			if (vertexes[i].isSelected() && !dragging){ 
 				vertexes[i].select(); 
-			} //resets the selection position...
-		}
-		
-		if (dragging && SELECTED_VERTEXES > 0 && ctrl) {
-			for (var j=0;j<vertexes.length;j++){
-				var dx = mousePos.x - mouseClick.x;
-				var dy = mousePos.y - mouseClick.y;
-				if (vertexes[j].isSelected()){ vertexes[j].setSelect(dx, dy); }
+			} //resets the selection position if dragging has happened
+
+			if (dragging && SELECTED_VERTEXES > 0 && ctrl) {
+				var dx = getMousePos().x - mouseClick.x;
+				var dy = getMousePos().y - mouseClick.y;
+				if (vertexes[i].isSelected()){ vertexes[i].setSelect(dx, dy); }
 			}
 		}
-	
+		
 		if (ctrl && dblclick && SELECTED_VERTEXES > 0){
+			var checkVerts = new Array();
 			for (var j=0;j<vertexes.length;j++){
-				if (vertexes[j].isSelected()){ 
-					var parents = vertexes[j].getParents();
-					if (parents.length > 0) {
-						for(var i=0;i<parents.length;i++){parents[i].select();}
-					}
-				}
+				if (vertexes[j].isSelected()){ checkVerts.push(vertexes[j]); }
+			}
+
+			for (var i=0;j<checkVerts.length;i++){
+				var parents = checkVerts[i].getParents();
+				for (var k=0;k<parents.length;k++){ parents[k].select; }
 			}
 		}
 
@@ -58,7 +57,6 @@ function Selector(){
 					vertexes[j].deselect();
 				}
 			}
-			enter = false;
 		}
 
 		if (deleteKey) {
@@ -72,7 +70,6 @@ function Selector(){
 					vertexes[j].delete();
 				}
 			}
-			deleteKey = false;
 		}
 		
 		if (dragging && !ctrl) {
@@ -112,17 +109,19 @@ function Selector(){
 				}
 			}
 		}
-
-		for (var i=0;i<vertexes.length;i++){
+		
+		//-----------------
+		//TODO: This part needs some work to make selection more predictable...
+		for (var i=0;i<vertexes.length;i++) {
 			var vert = vertexes[i];
-			if (vert.isNear(mousePos.x, mousePos.y, selectRangeVert)){
-				if (vert.isSelected()) {
+			if (vert.isNear(getMousePos().x, getMousePos().y, selectRangeVert)){
+				if (vert.isSelected() && ctrl) {
 					vert.deselect();
-				} else {
+				} else if (!vert.isSelected()) {
 					vert.select();
-					selectedVertexes.push(vertexes[i]);
+					selectedVertexes.push(vert);
 				}
-				nearAnything = true;
+					nearAnything = true;
 			} else if(!shift && !ctrl && vert.isSelected()) {
 				vert.deselect();
 			}
@@ -130,18 +129,15 @@ function Selector(){
 
 		for (var i=0;i<elements.length;i++){
 			var elem = elements[i];
-			if (elem.isNear(mousePos.x, mousePos.y, selectRangeElem)){
-				if (elem.isSelected()) {
-					elem.deselect();
-				} else {
-					elem.select();
-					var elemVerts = elem.getVertexes();
-					for (var i=0;i<elemVerts.length;i++) { selectedVertexes.push(elem[i]); }
-				}
+			if (elem.isNear(getMousePos().x, getMousePos().y, selectRangeElem)){
+				elem.select();
+				var elemVerts = elem.getVertexes();
+				for (var i=0;i<elemVerts.length;i++) { selectedVertexes.push(elem[i]); }
 				nearAnything = true;
 			} else if(!shift && !ctrl && elem.isSelected()) {
 				elem.deselect();
 			}
 		}
+		//-----------------
 	}
 }

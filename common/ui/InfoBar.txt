@@ -7,38 +7,39 @@ function InfoBar(){
 	this.blink = false;
 
 	this.show = function(){
-		ctx.beginPath();
-		ctx.fillStyle = '#FFFFFF';
-		ctx.fillRect(0, canvas.height-this.height, canvas.width, this.height);
-		ctx.fillStyle = '#000000';
-		ctx.fillRect(0, canvas.height-this.height, canvas.width, this.line);
-		ctx.moveTo(0, canvas.height-this.height/2);
-		ctx.strokeStyle = '#B0B1B2';
-		ctx.lineTo(canvas.width, canvas.height-this.height/2-this.line/2)
-		ctx.stroke();
+		ctxIB.beginPath();
+		ctxIB.fillStyle = '#FFFFFF';
+		ctxIB.fillRect(0, 0, cib.width, this.height);
+		ctxIB.fillStyle = '#000000';
+		ctxIB.fillRect(0, 0, cib.width, this.line);
+		ctxIB.moveTo(0, this.height/2);
+		ctxIB.strokeStyle = '#B0B1B2';
+		ctxIB.lineTo(cib.width, this.height/2-this.line/2)
+		ctxIB.stroke();
 
-		ctx.font = this.height/2.5 + 'px serif';
-		ctx.fillText(this.info, 15, canvas.height-this.height/8 - this.line/2);
+		ctxIB.font = this.height/2.5 + 'px serif';
+		ctxIB.fillText(this.info, 15, this.height*3/8 + this.line/3);
 
-		ctx.font = this.height/2.8 + 'px serif';
-		ctx.fillText(this.record, 15, canvas.height-this.height*6/8 + this.line*2);
+		ctxIB.font = this.height/2.8 + 'px serif';
+		ctxIB.fillText(this.record, 15, this.height*6/8 + this.line*2);
 
-		ctx.moveTo(5, canvas.height-this.height + this.line*2);
-		ctx.lineTo(8, canvas.height-this.height*3/4 + this.line/2);
-		ctx.moveTo(8, canvas.height-this.height*3/4 - this.line/2);
-		ctx.lineTo(5, canvas.height-this.height/2 - this.line*2);
+		ctxIB.moveTo(5, this.height - this.line*2);
+		ctxIB.lineTo(8, this.height*3/4 - this.line/2);
+
+		ctxIB.moveTo(8, this.height*3/4 - this.line/2);
+		ctxIB.lineTo(5, this.height/2 + this.line);
 
 		if(this.blink) {
-			ctx.moveTo(6, canvas.height-this.height/8 + this.line/2);
-			ctx.lineTo(6, canvas.height-this.height/2 + this.line);
-			ctx.stroke();
+			ctxIB.moveTo(6, this.height/8 - this.line/2);
+			ctxIB.lineTo(6, this.height/2 - this.line);
+			ctxIB.stroke();
 		}
 
 		if(this.blinkFreq >= 40) { this.blink = false; }
 		else if(this.blinkFreq <= 0) { this.blink = true; }
 
 		if (this.blink) { this.blinkFreq++; } else { this.blinkFreq--; }
-		ctx.stroke();
+		ctxIB.stroke();
 	}
 
 	this.inform = function(info){
@@ -57,5 +58,9 @@ function InfoBar(){
 
 	this.removeLastInfo = function(){
 		this.info = info.splice(info.length-1, 1);
+	}
+		
+	this.getHeight = function(){
+		return this.height;
 	}
 }

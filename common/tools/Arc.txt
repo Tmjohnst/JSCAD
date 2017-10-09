@@ -132,10 +132,10 @@ function Arc(v1, v2, v3){
 		    r = Math.sqrt((b*b+c*c-4*a*d)/(4*a*a)),
 		    sa = Math.atan2(A.y-y, A.x-x), // starting angle
 		    ea = Math.atan2(B.y-y, B.x-x), // ending angle
-
-		    arcCW = (sa - ea);
-		    arcCCW = (ea - sa);
-		    cw = arcCW < arcCCW ? false : true;
+		
+		//this part taken from https://stackoverflow.com/a/33963353
+		    cp = (C.x-A.x)*(B.y-A.y) - (C.y-A.y)*(B.x-A.x); 
+		    cw = (cp < 0);
 		
 		return {x:x, y:y, r:r, sa: sa, ea: ea, cw:cw};
 	}

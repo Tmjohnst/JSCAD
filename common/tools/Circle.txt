@@ -36,10 +36,10 @@ function Circle(){
 			ctx.stroke();
 		} else if(this.vertex1Set && !this.vertex2Set){
 
-			var compX = Math.round(mousePos.x/gridSize)*gridSize;
-			if (!snap) { compX = mousePos.x; }
-			var compY = Math.round(mousePos.y/gridSize)*gridSize;
-			if (!snap) { compY = mousePos.y; }
+			var compX = Math.round(getMousePos().x/gridSize)*gridSize;
+			if (!snap) { compX = getMousePos().x; }
+			var compY = Math.round(getMousePos().y/gridSize)*gridSize;
+			if (!snap) { compY = getMousePos().y; }
 
 			this.radius = Math.hypot(this.vertex1.x - compX, this.vertex1.y - compY);
 			ctx.beginPath();

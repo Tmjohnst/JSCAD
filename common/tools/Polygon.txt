@@ -4,7 +4,7 @@ function Polygon(){
 	var v1;
 
 	this.show = function(){
-		if (mouseClick.rightDown && !finished) { 
+		if (mouseClick.rightDown && !this.finished) { 
 			this.end(); 
 		}
 		//if (this.polyLines.length == 0) { this.v1.show(); }

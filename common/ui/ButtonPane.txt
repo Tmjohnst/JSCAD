@@ -5,10 +5,10 @@ function ButtonPane(width){
 	this.selectedTool = "NONE";
 
 	this.show = function(){
-		ctx.beginPath();
-		ctx.fillStyle = '#17bec1';
-		ctx.fillRect(0, 0, this.width, ctx.canvas.height);
-		ctx.stroke();
+		ctxUI.beginPath();
+		ctxUI.fillStyle = '#17bec1';
+		ctxUI.fillRect(0, 0, this.width, ctxUI.canvas.height);
+		ctxUI.stroke();
 
 		//show all buttons
 		for(i=0;i<this.buttons.length;i++){

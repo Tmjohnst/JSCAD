@@ -27,9 +27,9 @@ function Dimension(){
 					var b = midY - (m*midX);
 					ctx.moveTo(midX, midY);
 
-					ctx.lineTo(mousePos.x, (mousePos.y-b)/m);
-					this.dimPos.x = mousePos.x;
-					this.dimPos.y = mousePos.x*m+b;
+					ctx.lineTo(getMousePos().x, (getMousePos().y-b)/m);
+					this.dimPos.x = getMousePos().x;
+					this.dimPos.y = getMousePos().x*m+b;
 					ctx.stroke();
 					break;
 				default: break;

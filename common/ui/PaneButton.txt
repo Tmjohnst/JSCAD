@@ -20,100 +20,101 @@ function PaneButton(x,y,width,height,text){
 	}
 	
 	this.show = function(){
-		ctx.beginPath();
-		ctx.lineWidth = this.border;
-		ctx.rect(this.x+this.border/2, this.y+this.border/2, this.width-this.border, this.height-this.border);
+		ctxUI.beginPath();
+		ctxUI.lineWidth = this.border;
+		ctxUI.rect(this.x+this.border/2, this.y+this.border/2, this.width-this.border, this.height-this.border);
 		if(this.selected){
-			ctx.strokeStyle = '#ff0000';
+			ctxUI.strokeStyle = '#ff0000';
 		} else {
-			ctx.strokeStyle = '#000000';
+			ctxUI.strokeStyle = '#000000';
 		}
-		ctx.stroke();
+		ctxUI.stroke();
 		if (this.text == "circle") {
 			var r = this.width/3.5;
-			ctx.beginPath();
-			ctx.strokeStyle = '#008000';
-			ctx.arc(x + this.width/2,y + this.height/2,r,0,2*Math.PI, false);
-			ctx.lineWidth = this.border;
-			ctx.stroke();
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
+			ctxUI.arc(x + this.width/2,y + this.height/2,r,0,2*Math.PI, false);
+			ctxUI.lineWidth = this.border;
+			//ctxUI.stroke();
 		} else if(this.text == "line") {
-			ctx.beginPath();
-			ctx.strokeStyle = '#008000';
-			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
-			ctx.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
-			ctx.lineWidth = this.border;
-			ctx.stroke();
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
+			ctxUI.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctxUI.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
+			ctxUI.lineWidth = this.border;
+			//ctxUI.stroke();
 		} else if(this.text == "dimension") {
-			ctx.beginPath();
-			ctx.strokeStyle = '#008000';
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
 			var scl = 4;
-			ctx.moveTo(this.x+this.width/scl,this.y+this.width/scl);
-			ctx.lineTo(this.x+this.width - this.width/scl,this.y+this.height - this.width/scl);
+			ctxUI.moveTo(this.x+this.width/scl,this.y+this.width/scl);
+			ctxUI.lineTo(this.x+this.width - this.width/scl,this.y+this.height - this.width/scl);
 
-			ctx.moveTo(this.x+this.width/scl+3,this.y+this.width/scl-3);
-			ctx.lineTo(this.x+this.width/scl-3,this.y+this.width/scl+3);
+			ctxUI.moveTo(this.x+this.width/scl+3,this.y+this.width/scl-3);
+			ctxUI.lineTo(this.x+this.width/scl-3,this.y+this.width/scl+3);
 
-			ctx.moveTo(this.x+this.width - this.width/scl+3,this.y+this.height - this.width/scl-3);
-			ctx.lineTo(this.x+this.width - this.width/scl-3,this.y+this.height - this.width/scl+3);
+			ctxUI.moveTo(this.x+this.width - this.width/scl+3,this.y+this.height - this.width/scl-3);
+			ctxUI.lineTo(this.x+this.width - this.width/scl-3,this.y+this.height - this.width/scl+3);
 
-			ctx.lineWidth = this.border;
-			ctx.stroke();
+			ctxUI.lineWidth = this.border;
+			//ctxUI.stroke();
 		} else if(this.text == "rect") {
-			ctx.beginPath();
-			ctx.lineWidth = this.border;
-			ctx.rect(this.x+this.width/4, this.y+this.height/4, this.width/2, this.height/2);
-			ctx.strokeStyle = '#008000';
-			ctx.stroke();
+			ctxUI.beginPath();
+			ctxUI.lineWidth = this.border;
+			ctxUI.rect(this.x+this.width/4, this.y+this.height/4, this.width/2, this.height/2);
+			ctxUI.strokeStyle = '#008000';
+			//ctxUI.stroke();
 		} else if(this.text == "arc") {
 			var r = this.width/3.5;
-			ctx.beginPath();
-			ctx.strokeStyle = '#008000';
-			ctx.arc(x + this.width/2,y + this.height*3/5,r,0,Math.PI, true);
-			ctx.lineWidth = this.border;
-			ctx.stroke();
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
+			ctxUI.arc(x + this.width/2,y + this.height*3/5,r,0,Math.PI, true);
+			ctxUI.lineWidth = this.border;
+			//ctxUI.stroke();
 		} else if(this.text == "select") {
-			ctx.beginPath();
-			ctx.strokeStyle = '#008000';
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
 
-			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
-			ctx.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
+			ctxUI.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctxUI.lineTo(this.x+this.width - this.width/5,this.y+this.height - this.width/5);
 
-			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
-			ctx.lineTo(this.x+this.width/5,this.y+this.height - this.width/3);
+			ctxUI.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctxUI.lineTo(this.x+this.width/5,this.y+this.height - this.width/3);
 			
-			ctx.moveTo(this.x+this.width/5,this.y+this.width/5);
-			ctx.lineTo(this.x+this.width - this.width/3,this.y+this.width/5);
+			ctxUI.moveTo(this.x+this.width/5,this.y+this.width/5);
+			ctxUI.lineTo(this.x+this.width - this.width/3,this.y+this.width/5);
 			
-			ctx.lineWidth = this.border;
-			ctx.stroke();
+			ctxUI.lineWidth = this.border;
+			//ctxUI.stroke();
 		} else if(this.text == "polygon") {
-			ctx.beginPath();
-			ctx.strokeStyle = '#008000';
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
 
 			var unit = this.width/5;
 			var px = this.x;
 			var py = this.y;
 
-			ctx.moveTo(px+unit,py+unit);
-			ctx.lineTo(px+unit,py+unit*4);
+			ctxUI.moveTo(px+unit,py+unit);
+			ctxUI.lineTo(px+unit,py+unit*4);
 
-			ctx.moveTo(px+unit,  py+unit*4);
-			ctx.lineTo(px+unit*3,py+unit*4);
+			ctxUI.moveTo(px+unit,  py+unit*4);
+			ctxUI.lineTo(px+unit*3,py+unit*4);
 
-			ctx.moveTo(px+unit*3,py+unit*4);
-			ctx.lineTo(px+unit*4,py+unit*3);
+			ctxUI.moveTo(px+unit*3,py+unit*4);
+			ctxUI.lineTo(px+unit*4,py+unit*3);
 			
-			ctx.moveTo(px+unit*4,py+unit*3);
-			ctx.lineTo(px+unit*3,py+unit*2);
+			ctxUI.moveTo(px+unit*4,py+unit*3);
+			ctxUI.lineTo(px+unit*3,py+unit*2);
 
-			ctx.moveTo(px+unit*3,py+unit*2);
-			ctx.lineTo(px+unit*2,py+unit*3);
+			ctxUI.moveTo(px+unit*3,py+unit*2);
+			ctxUI.lineTo(px+unit*2,py+unit*3);
 
-			ctx.moveTo(px+unit*2,py+unit*3);
-			ctx.lineTo(px+unit,py+unit);
+			ctxUI.moveTo(px+unit*2,py+unit*3);
+			ctxUI.lineTo(px+unit,py+unit);
 
-			ctx.lineWidth = this.border;
-			ctx.stroke();
+			ctxUI.lineWidth = this.border;
+			//ctxUI.stroke();
 		}
+		ctxUI.stroke();
 	}
 }
