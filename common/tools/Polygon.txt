@@ -43,6 +43,7 @@ function Polygon(){
 	this.delete = function(){
 		for (var i=0; i<this.polyLines.length; i++){
 			this.polyLines[i].removeParent(this);
+			this.polyLines[i].delete();
 		}
 		deleteElement(this);
 	}

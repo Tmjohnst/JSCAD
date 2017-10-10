@@ -29,6 +29,20 @@ function ButtonPane(width){
 		this.buttons.push(b);
 	}
 
+	this.unhoverAll = function(){
+		for(i=0;i<this.buttons.length;i++){
+			this.buttons[i].unhover();
+		}
+	}
+
+	this.hasHoveringButton = function(){
+		var hoveringButton = false;
+		for(i=0;i<this.buttons.length;i++){
+			if (this.buttons[i].hovering) {hoveringButton = true;}
+		}
+		return hoveringButton;
+	}
+
 	this.selectButton = function(y){
 		var select = Math.floor(y/this.width);
 		var foundButton = false;
@@ -45,6 +59,13 @@ function ButtonPane(width){
 			this.selectedTool = "NONE";
 		}
 		
+	}
+
+	this.hover = function(y){
+		var hover = Math.floor(y/this.width);
+		for(i=0;i<this.buttons.length;i++){
+			i == hover ? this.buttons[i].hover() : this.buttons[i].unhover();
+		}
 	}
 
 	this.getSelectedTool = function(){

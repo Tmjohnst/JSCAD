@@ -117,13 +117,7 @@ function Line(v1, v2){
 		if (this.v) {
 			this.vertex2 = this.v;
 			this.vertex2Set = true;
-		}
-		var compX = Math.round(x/gridSize)*gridSize;
-		if (!snap) { compX = x; }
-		var compY = Math.round(y/gridSize)*gridSize;
-		if (!snap) { compY = y; }
-
-		if(!(this.vertex1.x == compX && this.vertex1.y == compY) && !this.vertex2Set){
+		} else {
 			this.vertex2 = new Vertex(x,y);
 			pushVertex(this.vertex2);
 		}

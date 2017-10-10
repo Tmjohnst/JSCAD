@@ -7,13 +7,17 @@ function Tool(){
 
 	this.constraints = {
 		horizontal: false,
+		horizontalTo: {},
 		vertical: false,
+		verticalTo: {},
 		radius: false,
+		radiusTo: {},
 		radiusDim: 0,
 		length: false,
+		lengthTo: {};
 		lengthDim: 0,
 		fixed: false,
-		fixedDim: {x:0, y:0}
+		fixedTo: {x:0, y:0}
 	}
 	
 	this.addParent = function(p){
@@ -41,6 +45,7 @@ function Tool(){
 			if (p === this.parents[i]) { this.parents.splice(i, 1); }
 		}
 		
+		//should be a toggleble option
 		if (this.parents.length == 0) { this.delete(); }
 	}
 

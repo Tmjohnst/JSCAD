@@ -126,17 +126,20 @@ function getMousePos(){
 	return mousePos;
 }
 
-function nearestVertex(x,y){
+function nearestVertex(x,y,buffer){
 	var ret = {};
 	var bestDist = 1000010;
 	this.x = x;
 	this.y = y;
+	this.buff = 1;
+
+	if(buffer) { this.buff = buffer; }
 
 	if (snap) { this.x = Math.round(x/gridSize)*gridSize; } else { this.x = x; }
 	if (snap) { this.y = Math.round(y/gridSize)*gridSize; } else { this.y = y; }
 
 	for (var i=0; i<vertexes.length; i++){
-		if (vertexes[i].isNear(this.x,this.y,gridSize*1.1)) {
+		if (vertexes[i].isNear(this.x,this.y,gridSize*buff)) {
 			var aDist = Math.hypot(vertexes[i].x - this.x, vertexes[i].y - this.y);
 			if (aDist < bestDist) {
 				ret = vertexes[i];
@@ -282,7 +285,11 @@ function draw(){
 		toolSelected = true;
 		toolIsDrawing = true;
 	}
-	
+
+	//we want to run this check once more after the mouse leaves the pane...
+	if (mousePos.x < leftPanelWidth) { buttonPane.hover(mousePos.y); }
+	else if (mousePos.x >= leftPanelWidth && buttonPane.hasHoveringButton()) { buttonPane.unhoverAll(); }
+
 	//handle clicks
 	if (mouseClick.down){
 		mouseClick.x = mousePos.x;

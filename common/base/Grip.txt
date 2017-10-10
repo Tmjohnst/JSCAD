@@ -1,64 +1,10 @@
-function Vertex(x, y){
-	Tool.call(this); //vertex is a base, but the Tool has all the helper functions that a Vertex needs
-	this.selected = false;
-	this.vertexSize = 2;
+function Grip(x, y){
+	//Grip consists of a Vertex and 2 handles
+	Vertex.call(this); //Grip is a base, but the Vertex has all the functions that a Grip needs
 
-	this.x = 0;
-	this.y = 0;
-
-	this.worldX = 0; //TODO: proper translation from grid coords to world coords (for zooming, saving, scaling, etc)
-	this.worldY = 0; //TODO
-
-	this.constraints = {
-		horizontal: false,
-		vertical: false,
-		radius: false,
-		radiusDim: 0,
-		length: false,
-		lengthDim: 0,
-		fixed: false,
-		fixedDim: {x:0, y:0}
-	}
-
-	if (snap) { this.x = Math.round(x/gridSize)*gridSize || 0; }
-	else { this.x = x || 0; }
-
-	if (snap) { this.y = Math.round(y/gridSize)*gridSize || 0; }
-	else { this.y = y || 0; }
-
-	this.selectX = x;
-	this.selectY = y;
-	this.lineWidth = 1;
-	this.hovering = false; //shows when the mouse is hovering over the vertex
-	this.parents = new Array();
-	
-	this.getX = function(){
-		return this.x;
-	}
-	this.getY = function(){
-		return this.y;
-	}
-
-	this.isNear = function(x,y,snapDist){
-		if (Math.hypot(this.x - x, this.y - y) < snapDist) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	this.isContained = function(xa,ya,xb,yb){
-		return (this.between(xa, xb, this.x) && this.between(ya, yb, this.y));
-	}
-	
-	this.delete = function(){
-		if (this.parents.length != 0) { 
-			for (var i=0; i<this.parents.length; i++) {
-				this.parents[i].delete();
-			}
-		}
-		deleteVertex(this);
-	}
+	var handles = new Array();
+	handles[0] = {x:0, y:0, selectX:0, selectY:0}; //Each Grip has exactly 2 handles
+	handles[1] = {x:0, y:0, selectX:0, selectY:0};
 
 	this.show = function(){
 		ctx.beginPath();
@@ -72,6 +18,9 @@ function Vertex(x, y){
 			ctx.fill();
 			ctx.stroke();
 			ctx.globalAlpha = 1;
+
+
+			//TODO: Grip hovering
 		}
 
 		if (this.selected) {
@@ -93,38 +42,50 @@ function Vertex(x, y){
 			ctx.fillStyle = '#55C8E8';
 			ctx.fill();
 			ctx.stroke();
+
+			//TODO: Grip selected
 		} else {
 			var r = this.vertexSize;
 			ctx.beginPath();
 			ctx.strokeStyle = '#424242';
-			//var rand = Math.random()*10-5;
 			ctx.arc(this.x,this.y,r,0,2*Math.PI, false);
 			ctx.lineWidth = this.lineWidth;
 			ctx.stroke();
+
+			//TODO: Grip unselected
 		}
 		ctx.stroke();
 	}
 
 	this.select = function(){
+		//TODO: Determine which part of the Grip was selected (if Vertex is selected, the vert and handles both move)
+
 		if (!this.selected){
-			SELECTED_VERTEXES++;
+			SELECTED_VERTEXES++; //Grips can be counted as vertexes for selection I guess
 			this.selected = true;
 		}
+		
+
 		this.selectX = this.x; //holds the spot where the vertex was first selected
 		this.selectY = this.y;
 	}
 
 	this.setSelect = function(x, y){
+		//TODO: Figure out which part is selected, then set their X and Y
+
 		this.setX(this.selectX+x);
 		this.setY(this.selectY+y);
 	}
 
 	this.isSelected = function(){
+		//TODO: Determine what constitutes "selected" (just the vertex? any part?)
+
 		return this.selected;
 	}
 
 	this.deselect = function(){
-		//console.log("caller is " + this.deselect.caller.toString());
+		//TODO: Deselect all parts and reset the select X and Y
+
 		if (this.selected) {
 			SELECTED_VERTEXES--;
 			this.selected = false;
@@ -134,15 +95,9 @@ function Vertex(x, y){
 	}
 
 	this.toString = function(){
-		return "(" + this.x + ", " + this.y + ") selected: " + this.selected; 
-	}
+		//TODO: Add the grips to the string
 
-	this.between = function(a,b,c){
-		if (a > b) {
-			return (c <= a && c >= b);
-		} else {
-			return (c <= b && c >= a);
-		}
+		return "(" + this.x + ", " + this.y + ") selected: " + this.selected; 
 	}
 
 	this.setX = function(x){
@@ -161,6 +116,8 @@ function Vertex(x, y){
 	}
 
 	this.dist = function(v){
+		//TODO: Dist to Grip should return the dist to the nearest grip or vert
+
 		var x2 = (v.x - this.x) * (v.x - this.x);
 		var y2 = (v.y - this.y) * (v.y - this.y);
 		return Math.sqrt(x2+y2);

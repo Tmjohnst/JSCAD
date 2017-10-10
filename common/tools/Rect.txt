@@ -127,7 +127,7 @@ function Rect(){
 		if (nearestVertex(this.vertex1.x,this.vertex2.y)) { 
 			this.vertex3 = nearestVertex(this.vertex1.x,this.vertex2.y);
 		} else {
-			this.vertex3.set(this.vertex1.x, getMousePos().y);
+			this.vertex3.set(this.vertex1.x,this.vertex2.y);
 			pushVertex(this.vertex3);
 		}
 		
@@ -135,7 +135,7 @@ function Rect(){
 		if (nearestVertex(this.vertex2.x,this.vertex1.y)) { 
 			this.vertex4 = nearestVertex(this.vertex2.x,this.vertex1.y); 
 		} else {
-			this.vertex4.set(getMousePos().x, this.vertex1.y);
+			this.vertex4.set(this.vertex2.x, this.vertex1.y);
 			pushVertex(this.vertex4);
 		}
 
