@@ -1,9 +1,13 @@
-function Circle(){
+function Circle(v1, v2){
 	Tool.call(this);
 	var vertex1Set = false;
 	var vertex2Set = false;
-	var vertex1;
-	var vertex2;
+	this.vertex1 = v1 || {};
+	this.vertex2 = v2 || {};
+
+	if (v1) { this.vertex1Set = true; this.vertex1.addParent(this); }
+	if (v2) { this.vertex2Set = true; this.vertex2.addParent(this); }
+
 	var radius;
 
 	this.show = function(){

@@ -32,6 +32,7 @@ var snap = true;
 var snapOverride = false; //the cursor shouldn't snap whilst selecting
 var showGrid = true;
 
+var debug = false; //global flag for debug information
 var shift = false; //global flag to check if shift is pressed
 var ctrl = false; //global flag to check if ctrl is pressed
 var enter = false; //global flag to check if enter is pressed
@@ -47,7 +48,7 @@ var lastUpdate = Date.now();
 //var VERTEXES = 0; //total vertexes created
 var SELECTED_VERTEXES = 0; //to indicate whether or not we're selecting
 window.addEventListener('resize', function(evt){resize(evt);}, false);
-window.addEventListener('dblclick', function(evt){ doubleClick(); console.log("DSF");}, false);
+window.addEventListener('dblclick', function(evt){ doubleClick(); }, false);
 window.addEventListener('mousemove', function(evt){ mousePos = handleMousePos(evt); }, false);
 window.addEventListener('mousedown', function(evt){
 	mouseClick = handleMousePos(evt);
@@ -148,7 +149,6 @@ function nearestVertex(x,y,buffer){
 		}
 	}
 	if (bestDist == 1000010) { ret = false; }
-	console.log(ret);
 	return ret;
 }
 
@@ -216,6 +216,7 @@ function init(){
 	buttonPane.addButton('rect');
 	buttonPane.addButton('line');
 	buttonPane.addButton('polygon');
+	buttonPane.addButton('ngon');
 	buttonPane.addButton('arc');
 	buttonPane.addButton('dimension');
 
@@ -334,7 +335,6 @@ function draw(){
 				toolIsDrawing = false;
 			}
 			drawUI();
-			console.log("button");
 		} 
 		
 		//if we are drawing and it's within the canvas
@@ -343,14 +343,14 @@ function draw(){
 			if (buttonPane.getSelectedTool() == "line" && !elementIsDrawing){ //removed !drawing
 				var line = new Line();
 				line.start(mouseClick.x, mouseClick.y);
-				this.pushElement(line)
+				this.pushElement(line);
 			}
 
 			//handle the dimension tool
 			if (buttonPane.getSelectedTool() == "dimension" && !elementIsDrawing){ //removed !drawing
 				var dimension = new Dimension();
 				dimension.start(mouseClick.x, mouseClick.y);
-				this.pushElement(dimension)
+				this.pushElement(dimension);
 			}
 		
 			//handle the circle tool
@@ -379,6 +379,13 @@ function draw(){
 				var poly = new Polygon();
 				poly.start(mouseClick.x, mouseClick.y);
 				this.pushElement(poly);
+			}
+
+			//handle the ngon tool
+			if (buttonPane.getSelectedTool() == "ngon" && !elementIsDrawing){ //removed !drawing
+				var ngon = new Ngon();
+				ngon.start(mouseClick.x, mouseClick.y);
+				this.pushElement(ngon);
 			}
 
 			//advance any element if it's currently drawing
@@ -435,4 +442,4 @@ function info(){
 
 init();
 requestAnimationFrame(draw);
-setInterval(info, 1000);
+if (debug) {setInterval(info, 1000);}

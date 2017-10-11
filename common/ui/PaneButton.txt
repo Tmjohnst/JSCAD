@@ -103,6 +103,33 @@ function PaneButton(x,y,width,height,text){
 			ctxUI.moveTo(px+unit*2,py+unit*3);
 			ctxUI.lineTo(px+unit,py+unit);
 
+		 	ctxUI.lineWidth = this.border;
+		} else if(this.text == "ngon") {
+			ctxUI.beginPath();
+			ctxUI.strokeStyle = '#008000';
+
+			var unit = this.width/5;
+			var px = this.x;
+			var py = this.y;
+
+			ctxUI.moveTo(px+unit,py+unit);
+			ctxUI.lineTo(px+unit,py+unit*4);
+
+			ctxUI.moveTo(px+unit,  py+unit*4);
+			ctxUI.lineTo(px+unit*3,py+unit*4);
+
+			ctxUI.moveTo(px+unit*3,py+unit*4);
+			ctxUI.lineTo(px+unit*4,py+unit*3);
+			
+			ctxUI.moveTo(px+unit*4,py+unit*3);
+			ctxUI.lineTo(px+unit*3,py+unit*2);
+
+			ctxUI.moveTo(px+unit*3,py+unit*2);
+			ctxUI.lineTo(px+unit*2,py+unit*3);
+
+			ctxUI.moveTo(px+unit*2,py+unit*3);
+			ctxUI.lineTo(px+unit,py+unit);
+
 			ctxUI.lineWidth = this.border;
 		}
 		ctxUI.stroke();

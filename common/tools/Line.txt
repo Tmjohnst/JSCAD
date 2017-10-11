@@ -5,8 +5,8 @@ function Line(v1, v2){
 	this.vertex1 = v1 || {};
 	this.vertex2 = v2 || {};
 
-	if (v1) this.vertex1Set = true;
-	if (v2) this.vertex2Set = true;
+	if (v1) { this.vertex1Set = true; this.vertex1.addParent(this); }
+	if (v2) { this.vertex2Set = true; this.vertex2.addParent(this); }
 
 	this.show = function(){	
 		if (this.vertex1Set && this.vertex2Set) {
@@ -73,8 +73,18 @@ function Line(v1, v2){
 	}
 
 	this.delete = function(){
-		this.vertex1.removeParent(this);
-		this.vertex2.removeParent(this);
+		this.deleted = true;
+		this.notifyParentsToCheckChildren();
+		
+		if (this.isSelected()){
+			if (!this.vertex1.deleted) { this.vertex1.delete(); }
+			if (!this.vertex2.deleted) { this.vertex2.delete(); }
+		} else {
+			this.vertex1.removeParent(this);
+			this.vertex2.removeParent(this);
+		}
+		
+		
 		deleteElement(this);
 	}
 		

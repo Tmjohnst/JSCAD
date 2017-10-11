@@ -13,6 +13,20 @@ function Polygon(){
 		}
 	}
 
+	this.checkChildren = function(){
+		//this is redundant code, but I don't know how to use a "super()" function
+		for (var i=0; i<this.children.length; i++) {
+			if (this.children[i].deleted) { removeChild(this.children[i]); }
+		}
+		
+		for (var i=0; i<this.polyLines.length; i++){
+			if (this.polyLines[i].deleted){
+				this.polyLines[i].removeParent(this);
+				this.polyLines.splice(i, 1);
+			}
+		}
+	}
+
 	this.isSelected = function(){
 		var isSelected = false;
 		for (var i=0; i<this.polyLines.length; i++){

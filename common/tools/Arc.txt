@@ -9,9 +9,9 @@ function Arc(v1, v2, v3){
 	this.vertex2 = v2 || {};
 	this.vertex3 = v3 || {};
 
-	if (v1) this.vertex1Set = true;
-	if (v2) this.vertex2Set = true;
-	if (v3) this.vertex3Set = true;
+	if (v1) { this.vertex1Set = true; this.vertex1.addParent(this); }
+	if (v2) { this.vertex2Set = true; this.vertex2.addParent(this); }
+	if (v3) { this.vertex3Set = true; this.vertex3.addParent(this); }
 	
 	this.radius = 0;
 	this.arcDraw = {x:0, y:0, r:0, sa:0, ea:0};

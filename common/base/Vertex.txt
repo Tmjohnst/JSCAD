@@ -53,10 +53,13 @@ function Vertex(x, y){
 	
 	this.delete = function(){
 		if (this.parents.length != 0) { 
-			for (var i=0; i<this.parents.length; i++) {
-				this.parents[i].delete();
+			for (var i=this.parents.length-1; i>=0; i--) {
+				if (!this.parents[i].deleted) { this.parents[i].delete(); }
+				this.parents.splice(i, 1);
+				console.log("told parent " + i + " to go delete themselves.");
 			}
 		}
+		this.deleted = true;
 		deleteVertex(this);
 	}
 
@@ -97,7 +100,6 @@ function Vertex(x, y){
 			var r = this.vertexSize;
 			ctx.beginPath();
 			ctx.strokeStyle = '#424242';
-			//var rand = Math.random()*10-5;
 			ctx.arc(this.x,this.y,r,0,2*Math.PI, false);
 			ctx.lineWidth = this.lineWidth;
 			ctx.stroke();
@@ -124,7 +126,6 @@ function Vertex(x, y){
 	}
 
 	this.deselect = function(){
-		//console.log("caller is " + this.deselect.caller.toString());
 		if (this.selected) {
 			SELECTED_VERTEXES--;
 			this.selected = false;
