@@ -5,13 +5,16 @@ function Ngon(v1, v2){
 	this.vertex1 = v1 || {};
 	this.vertex2 = v2 || {};
 	this.sides = new Array();
-	this.numSides = 8;
+	this.numSides = 5;
 	this.offset = 0;
 
 	if (v1) { this.vertex1Set = true; this.vertex1.addParent(this); }
 	if (v2) { this.vertex2Set = true; this.vertex2.addParent(this); }
 
 	this.show = function(){	
+		//if(scrollup) { this.numSides++; }
+		//if(scrolldown && this.numSides > 3) { this.numSides--; }
+		
 		if (this.vertex1Set && this.vertex2Set) {
 			//have to recalculate if the offset is different
 			var newOff = Math.atan2(this.vertex2.x - this.vertex1.x, this.vertex2.y - this.vertex1.y);
@@ -68,6 +71,11 @@ function Ngon(v1, v2){
 				this.sides.push(l);
 			}
     		}
+
+		for (var i=this.sides.length-1; i>sides; i--) {
+			this.sides[i].delete();
+			this.sides.splice(i,1);
+		}
 
 		if(!this.sides[sides]){
 			var l = new Line(this.sides[sides-1].vertex1, this.vertex2);

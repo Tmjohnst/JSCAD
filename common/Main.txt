@@ -39,6 +39,8 @@ var enter = false; //global flag to check if enter is pressed
 var deleteKey = false; //global flag to check if delete is pressed
 var dragging = false; //global flag to check if we're dragging
 var dblclick = false; //global flag to watch for double clicks
+var scrollup = false;
+var scrolldown = false;
 
 var framerate = 120; //fps
 var ONE_FRAME_TIME = 1000 / framerate;
@@ -60,13 +62,11 @@ window.addEventListener('mouseup', function(evt){
 	mouseClick.held = false;
 	dragging = false;
 }, false);
-var locked = false; //should go in a closure so it's not polluting
+
 window.addEventListener('wheel', function(evt){
-	//This is not how  you zoom.
-	if(locked) return;
-  	locked = true;
 	dy = parseFloat((evt.deltaY/100).toFixed(2));
-	locked = false;
+	if (dy > 0) { scrollup = true; }
+	if (dy < 0) { scrolldown = true; }
 }, false);
 
 window.addEventListener('keydown', function(evt){ 
@@ -425,6 +425,8 @@ function draw(){
 	mouseClick.rightDown = false;
 	enter = false;
 	deleteKey = false;
+	scrollup = false;
+	scrolldown = false;
 	
 	drawIB();
 	requestAnimationFrame(draw);
