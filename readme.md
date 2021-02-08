@@ -11,12 +11,3 @@ Most tools are built to be self-explanatory with the exception of the selector t
 Holding CTRL activates the "secondary" function of any tool you're using, if it exists. Your cursor will change to a red PLUS (placeholder).
 
 Shift is used to add more vertexes to the current selection set.
-
-# Changelog
-
-## Version 0.5
-
-+Initial feature incomplete release
-
-## Version 0.6
-+Major migration to using libraries ([Three.js](https://github.com/mrdoob/three.js "Three.js") and [Require.js](https://github.com/requirejs/requirejs "Require.js")) begun
